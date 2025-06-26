@@ -1,0 +1,26 @@
+package Entity;
+
+import java.awt.image.BufferedImage; // สำหรับจัดการรูปภาพ
+
+public class Entity {
+	
+	// ตำแหน่งปัจจุบันของ Entity บนหน้าจอ (x, y coordinate)
+	public int x, y;
+	// ความเร็วในการเคลื่อนที่ของ Entity
+	public int speed;
+	
+	// ตัวแปร BufferedImage สำหรับเก็บรูปภาพของ Entity ในแต่ละท่าทาง (สำหรับแอนิเมชั่น)
+	// up1, up2: ภาพสำหรับการเดินขึ้น เฟรม 1 และ 2
+	// down1, down2: ภาพสำหรับการเดินลง เฟรม 1 และ 2
+	// left1, left2: ภาพสำหรับการเดินซ้าย เฟรม 1 และ 2
+	// right1, right2: ภาพสำหรับการเดินขวา เฟรม 1 และ 2
+	public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;  
+	
+	// ทิศทางที่ Entity กำลังหันหน้าไป (เช่น "up", "down", "left", "right")
+	public String direction;
+	
+	// ตัวนับสำหรับควบคุมความเร็วของแอนิเมชั่น (เปลี่ยนเฟรมรูปภาพ)
+	public int spriteCounter = 0;
+	// ตัวเลขระบุเฟรมแอนิเมชั่นปัจจุบัน (1 หรือ 2)
+	public int spriteNum = 1;
+}

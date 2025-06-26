@@ -1,0 +1,145 @@
+package Entity;
+
+import java.awt.Graphics2D;       // สำหรับวาดภาพ 2 มิติขั้นสูง
+import java.awt.image.BufferedImage; // สำหรับจัดการรูปภาพ
+import java.io.IOException;        // สำหรับจัดการข้อผิดพลาดเกี่ยวกับการ I/O
+
+import javax.imageio.ImageIO;      // สำหรับอ่านไฟล์รูปภาพ
+
+import JavaLearn.GamePanel;      // นำเข้าคลาส GamePanel
+import JavaLearn.KeyHandler;     // นำเข้าคลาส KeyHandler
+
+public class Player extends Entity{ // Player เป็น Entity (สืบทอดคุณสมบัติมาจาก Entity)
+
+	GamePanel gp;     // อ้างอิงถึง GamePanel เพื่อเข้าถึงข้อมูลของเกม
+	KeyHandler keyH;  // อ้างอิงถึง KeyHandler เพื่อตรวจสอบการกดปุ่ม
+	
+	// Constructor สำหรับ Player
+	public Player(GamePanel gp, KeyHandler keyH) {
+		
+		this.gp = gp;       // กำหนด GamePanel ที่รับมาให้กับตัวแปร gp
+		this.keyH = keyH;   // กำหนด KeyHandler ที่รับมาให้กับตัวแปร keyH
+		
+		setDefaultValues();  // เรียกเมธอดเพื่อตั้งค่าเริ่มต้นของผู้เล่น
+		getPlayerImage();    // เรียกเมธอดเพื่อโหลดรูปภาพผู้เล่น
+	}
+	
+	// เมธอดสำหรับตั้งค่าเริ่มต้นของตัวละครผู้เล่น
+	public void setDefaultValues() {
+		
+		x = 100; // ตำแหน่ง X เริ่มต้น
+		y = 100; // ตำแหน่ง Y เริ่มต้น
+		speed = 4; // ความเร็วในการเคลื่อนที่
+		direction = "down"; // ทิศทางเริ่มต้นที่ผู้เล่นหันหน้าไป
+	}
+	
+	// เมธอดสำหรับโหลดรูปภาพแอนิเมชั่นของผู้เล่น
+	public void getPlayerImage() {
+		try {
+			// โหลดรูปภาพแต่ละเฟรมสำหรับแต่ละทิศทางจาก Resources
+			up1 = ImageIO.read(getClass().getResourceAsStream("/player/Red_TurnBack1.png"));
+			up2 = ImageIO.read(getClass().getResourceAsStream("/player/Red_TurnBack2.png"));
+			down1 = ImageIO.read(getClass().getResourceAsStream("/player/Red_LookFace1.png"));
+			down2 = ImageIO.read(getClass().getResourceAsStream("/player/Red_LookFace2.png"));
+			left1 = ImageIO.read(getClass().getResourceAsStream("/player/Red_TurnLeft1.png"));
+			left2 = ImageIO.read(getClass().getResourceAsStream("/player/Red_TurnLeft2.png"));
+			right1 = ImageIO.read(getClass().getResourceAsStream("/player/Red_TurnRight1.png"));
+			right2 = ImageIO.read(getClass().getResourceAsStream("/player/Red_TurnRight2.png"));
+			
+		}catch(IOException e) {
+			// หากเกิดข้อผิดพลาดในการโหลดรูปภาพ จะแสดง Stack Trace
+			e.printStackTrace();
+		}
+	}
+	
+	// เมธอดสำหรับอัปเดตสถานะของผู้เล่น (ตำแหน่ง, ทิศทาง, แอนิเมชั่น)
+	public void update() {
+		
+		// ตรวจสอบว่ามีปุ่มทิศทางใดถูกกดอยู่หรือไม่
+		if(keyH.upPressed == true || keyH.downPressed == true || keyH.leftPressed == true || keyH.rightPressed == true) {
+			
+			// ถ้ากดปุ่ม 'W' (ขึ้น)
+			if(keyH.upPressed == true){  
+				direction = "up"; // ตั้งทิศทางเป็น "up"
+				y -= speed;       // ลดค่า Y (เคลื่อนที่ขึ้น)
+			}
+			// ถ้ากดปุ่ม 'S' (ลง)
+			else if(keyH.downPressed == true){   
+				direction = "down"; // ตั้งทิศทางเป็น "down"
+				y += speed;       // เพิ่มค่า Y (เคลื่อนที่ลง)
+			}
+			// ถ้ากดปุ่ม 'A' (ซ้าย)
+			else if(keyH.leftPressed == true){   
+				direction = "left"; // ตั้งทิศทางเป็น "left"
+				x -= speed;       // ลดค่า X (เคลื่อนที่ซ้าย)
+			}
+			// ถ้ากดปุ่ม 'D' (ขวา)
+			else if(keyH.rightPressed == true){   
+				direction = "right"; // ตั้งทิศทางเป็น "right"
+				x += speed;       // เพิ่มค่า X (เคลื่อนที่ขวา)
+			}
+			
+			// นับตัว spriteCounter เพื่อควบคุมความเร็วในการเปลี่ยนเฟรมแอนิเมชั่น
+			spriteCounter++;
+			// ถ้า spriteCounter เกิน 12 (หมายถึงผ่านไป 12 เฟรมเกม)
+			if(spriteCounter > 12) {
+				// สลับเฟรมแอนิเมชั่นระหว่าง 1 และ 2
+				if(spriteNum == 1) {
+					spriteNum = 2;
+				}
+				else if(spriteNum == 2) {
+					spriteNum = 1;
+				}
+				spriteCounter = 0; // รีเซ็ต spriteCounter
+			}
+		}		
+	}
+	
+	// เมธอดสำหรับวาดผู้เล่นบนหน้าจอ
+	public void draw(Graphics2D g2) {
+		// (โค้ดที่คอมเมนต์ไว้ด้านล่างเป็นตัวอย่างการวาดสี่เหลี่ยมสีขาวสำหรับทดสอบ)
+		//g2.setColor(Color.WHITE);  // กำหนดสีขาว
+		// g2.fillRect(x, y, width, height);  // วาดสี่เหลี่ยมแล้วเติมสีที่กำหนดลงไป
+		//g2.fillRect(x, y, gp.tileSize, gp.tileSize); // วาดสี่เหลี่ยมขนาด TileSize
+		
+		BufferedImage image = null; // ตัวแปรสำหรับเก็บรูปภาพที่จะวาด
+		
+		// เลือกรูปภาพที่จะวาดตามทิศทางและเฟรมแอนิเมชั่นปัจจุบัน
+		switch(direction) {
+		case "up":
+			if(spriteNum == 1) {
+				image = up1;
+			}
+			if(spriteNum == 2) {
+				image = up2;
+			}
+			break;
+		case "down":
+			if(spriteNum == 1) {
+				image = down1;
+			}
+			if(spriteNum == 2) {
+				image = down2;
+			}
+			break;
+		case "left":
+			if(spriteNum == 1) {
+				image = left1;
+			}
+			if(spriteNum == 2) {
+				image = left2;
+			}
+			break;
+		case "right":
+			if(spriteNum == 1) {
+				image = right1;
+			}
+			if(spriteNum == 2) {
+				image = right2;
+			}
+			break;
+		}
+		// วาดรูปภาพที่เลือกบนหน้าจอ โดยกำหนดตำแหน่ง (x, y) และขนาด (tileSize)
+		g2.drawImage(image, x, y, gp.tileSize, gp.tileSize, null);
+	}
+}

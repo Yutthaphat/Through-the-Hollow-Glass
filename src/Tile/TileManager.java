@@ -1,0 +1,131 @@
+package Tile;
+
+import java.awt.Graphics2D;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+import javax.imageio.ImageIO;
+
+import JavaLearn.GamePanel;
+
+public class TileManager {
+	
+	GamePanel gp;
+	public Tile[] tile;
+	public int mapTileNum[][];
+	
+	public TileManager(GamePanel gp) {
+		
+		this.gp = gp;
+		
+		tile = new Tile[10]; // กำหนดขนาด 10 สำหรับ Tile types
+		mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow]; // สร้างอาเรย์สำหรับเก็บข้อมูลแผนที่
+
+		getTileImage(); // โหลดรูปภาพ Tile
+		loadMap("/maps/world01.txt"); // โหลดข้อมูลแผนที่จากไฟล์
+	}
+	
+	public void getTileImage() {
+		
+		try {
+			// โหลดรูปภาพ Tile ประเภทต่างๆ
+			tile[0] = new Tile();
+			tile[0].image = ImageIO.read(getClass().getResourceAsStream("/tiles/grass.png"));
+			
+			tile[1] = new Tile();
+			tile[1].image = ImageIO.read(getClass().getResourceAsStream("/tiles/wall.png"));
+			tile[1].collision = true;
+
+			tile[2] = new Tile();
+			tile[2].image = ImageIO.read(getClass().getResourceAsStream("/tiles/water.png"));
+			tile[2].collision = true;
+			
+			tile[3] = new Tile();
+			tile[3].image = ImageIO.read(getClass().getResourceAsStream("/tiles/earth.png"));
+			
+			tile[4] = new Tile();
+			tile[4].image = ImageIO.read(getClass().getResourceAsStream("/tiles/tree.png"));
+			tile[4].collision = true;
+			
+			tile[5] = new Tile();
+			tile[5].image = ImageIO.read(getClass().getResourceAsStream("/tiles/sand.png"));
+			
+			
+		}catch(IOException e) {
+			e.printStackTrace(); // พิมพ์ stack trace หากมีข้อผิดพลาดในการโหลดรูป
+		}
+	}
+
+	public void loadMap(String filePath) {
+		
+		try {
+			InputStream is = getClass().getResourceAsStream(filePath);
+			BufferedReader br = new BufferedReader(new InputStreamReader(is));
+			
+			int col = 0;
+			int row = 0;
+			// ลูปอ่านข้อมูลแผนที่
+			while(col < gp.maxWorldCol && row < gp.maxWorldRow) { // วนลูปผิดตรรกะสำหรับการอ่านไฟล์
+				
+				String line = br.readLine(); // อ่านหนึ่งบรรทัด
+				
+				while(col < gp.maxWorldCol) { // วนลูปคอลัมน์ อาจเกินขนาดจริงของ numbers[]
+					
+					String numbers[] = line.split(" "); // แยกตัวเลข
+					
+					int num = Integer.parseInt(numbers[col]); // อาจเกิด ArrayIndexOutOfBoundsException
+					
+					mapTileNum[col][row] = num; // เก็บข้อมูลลงในอาเรย์
+					col++;
+				}
+				if(col == gp.maxWorldCol) {
+					col = 0;
+					row++;
+				}
+			}
+			br.close();
+			
+		}catch(Exception e) {
+			 //e.printStackTrace(); 
+		}
+	}
+	
+	public void draw(Graphics2D g2) {
+	    int worldCol = 0;
+	    int worldRow = 0;
+	    
+	    // ปรับปรุงลูป: วนลูปทั่วทั้ง World Map (ตาม maxWorldCol, maxWorldRow)
+	    while(worldCol < gp.maxWorldCol && worldRow < gp.maxWorldRow) { 
+	        
+	        int tileNum = mapTileNum[worldCol][worldRow];
+	        
+	        int worldX = worldCol * gp.tileSize; // คำนวณพิกัดของ Tile นี้ใน World Map
+	        int worldY = worldRow * gp.tileSize;
+
+	        // คำนวณพิกัดของ Tile นี้บนหน้าจอ (สัมพันธ์กับตำแหน่งผู้เล่น)
+	        // นี่คือสูตรมาตรฐานสำหรับการทำกล้องติดตามผู้เล่นในเกม 2D
+	        int screenX = worldX - gp.player.worldX + gp.player.screenX;
+	        int screenY = worldY - gp.player.worldY + gp.player.screenY;
+	        
+	        // **เพิ่ม Optimization (ไม่บังคับ แต่ดีต่อประสิทธิภาพ):**
+	        // วาด Tile เฉพาะเมื่อ Tile นั้นอยู่ในขอบเขตการมองเห็นของหน้าจอเท่านั้น
+	        // (เผื่อขอบนอกออกไปอีก 1 Tile เพื่อป้องกันขอบดำเวลาผู้เล่นขยับ)
+	        if(worldX + gp.tileSize > gp.player.worldX - gp.player.screenX &&
+	           worldX - gp.tileSize < gp.player.worldX + gp.player.screenX && // + gp.tileSize เพื่อขยายขอบขวา
+	           worldY + gp.tileSize > gp.player.worldY - gp.player.screenY &&
+	           worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) { // + gp.tileSize เพื่อขยายขอบล่าง
+	            
+	            g2.drawImage(tile[tileNum].image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+	        }
+
+	        worldCol++;
+	        
+	        if(worldCol == gp.maxWorldCol) {
+	            worldCol = 0;
+	            worldRow++;
+	        }
+	    }
+	}
+}
