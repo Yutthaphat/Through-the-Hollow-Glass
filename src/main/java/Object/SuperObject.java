@@ -1,10 +1,9 @@
 package Object;
 
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
-
 import JavaLearn.GamePanel;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class SuperObject {
 

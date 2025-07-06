@@ -1,8 +1,8 @@
 package Object;
 
-import java.io.IOException;
-
 import javax.imageio.ImageIO;
+import java.io.File;
+import java.io.IOException;
 
 public class OBJ_Key extends SuperObject {
 	public OBJ_Key(){

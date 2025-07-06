@@ -1,12 +1,10 @@
 package JavaLearn;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics2D;
+import Object.OBJ_Key;
+
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.text.DecimalFormat;
-
-import Object.OBJ_Key;
 
 public class UI {
 	

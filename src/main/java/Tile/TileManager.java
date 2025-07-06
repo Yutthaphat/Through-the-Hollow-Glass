@@ -1,14 +1,10 @@
 package Tile;
 
-import java.awt.Graphics2D;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import JavaLearn.GamePanel;
 
 import javax.imageio.ImageIO;
-
-import JavaLearn.GamePanel;
+import java.awt.*;
+import java.io.*;
 
 public class TileManager {
 	
@@ -24,7 +20,7 @@ public class TileManager {
 		mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow]; // สร้างอาเรย์สำหรับเก็บข้อมูลแผนที่
 
 		getTileImage(); // โหลดรูปภาพ Tile
-		loadMap("/maps/world01.txt"); // โหลดข้อมูลแผนที่จากไฟล์
+		loadMap("res/maps/world01.txt"); // โหลดข้อมูลแผนที่จากไฟล์
 	}
 	
 	public void getTileImage() {
@@ -61,7 +57,7 @@ public class TileManager {
 	public void loadMap(String filePath) {
 		
 		try {
-			InputStream is = getClass().getResourceAsStream(filePath);
+			InputStream is = getClass().getResourceAsStream(filePath.replace("res/", "/"));
 			BufferedReader br = new BufferedReader(new InputStreamReader(is));
 			
 			int col = 0;
@@ -88,7 +84,7 @@ public class TileManager {
 			br.close();
 			
 		}catch(Exception e) {
-			 //e.printStackTrace(); 
+			e.printStackTrace();
 		}
 	}
 	

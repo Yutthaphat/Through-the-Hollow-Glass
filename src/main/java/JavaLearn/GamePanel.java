@@ -1,15 +1,11 @@
 package JavaLearn;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-
-import javax.swing.JPanel;
-
 import Entity.Player;
 import Object.SuperObject;
 import Tile.TileManager;
+
+import javax.swing.*;
+import java.awt.*;
 
 public class GamePanel extends JPanel implements Runnable{
 	
