@@ -79,7 +79,7 @@ public class Player extends Entity{
 			gp.cChecker.checkTile(this);
 			
 			// CHECK OBJECT COLLISION
-			int objIndex = gp.cChecker.checkObject(this, true);
+			int objIndex = gp.cChecker.checkObject(this, true, gp.map);
 			pickUpObject(objIndex);
 			
 			// IF COLLISION IS FALSE, PLAYER CAN MOVE
@@ -125,19 +125,19 @@ public class Player extends Entity{
 		
 		if(i != 999) {
 			
-			String objectName = gp.obj[i].name;
+			String objectName = gp.map.objects[i].name;
 			
 			switch(objectName) {
 			case "Key":
 				gp.playSE(1);
 				hasKey++;
-				gp.obj[i] = null;
+				gp.map.objects[i] = null;
 				gp.ui.showMessage("You got a key!");
 				break;
 			case "Door":
 				if(hasKey > 0) {
 					gp.playSE(3);
-					gp.obj[i] = null;
+					gp.map.objects[i] = null;
 					hasKey--;
 					gp.ui.showMessage("You opened the door!");
 				}
@@ -148,7 +148,7 @@ public class Player extends Entity{
 			case "Boots":
 				gp.playSE(2);
 				speed += 1;
-				gp.obj[i] = null;
+				gp.map.objects[i] = null;
 				gp.ui.showMessage("Speed up!");
 				break;
 			case "Chest":
@@ -165,40 +165,40 @@ public class Player extends Entity{
 		// g2.fillRect(x, y, width, height);  // วาดสี่เหลี่ยมแล้วเติมสีที่กำหนดลงไป
 		//g2.fillRect(x, y, gp.tileSize, gp.tileSize);
 		BufferedImage image = null;
-		
-		switch(direction) {
-		case "up":
-			if(spriteNum == 1) {
-				image = up1;
+
+		switch (direction) {
+			case "up" -> {
+				if (spriteNum == 1) {
+					image = up1;
+				}
+				if (spriteNum == 2) {
+					image = up2;
+				}
 			}
-			if(spriteNum == 2) {
-				image = up2;
+			case "down" -> {
+				if (spriteNum == 1) {
+					image = down1;
+				}
+				if (spriteNum == 2) {
+					image = down2;
+				}
 			}
-			break;
-		case "down":
-			if(spriteNum == 1) {
-				image = down1;
+			case "left" -> {
+				if (spriteNum == 1) {
+					image = left1;
+				}
+				if (spriteNum == 2) {
+					image = left2;
+				}
 			}
-			if(spriteNum == 2) {
-				image = down2;
+			case "right" -> {
+				if (spriteNum == 1) {
+					image = right1;
+				}
+				if (spriteNum == 2) {
+					image = right2;
+				}
 			}
-			break;
-		case "left":
-			if(spriteNum == 1) {
-				image = left1;
-			}
-			if(spriteNum == 2) {
-				image = left2;
-			}
-			break;
-		case "right":
-			if(spriteNum == 1) {
-				image = right1;
-			}
-			if(spriteNum == 2) {
-				image = right2;
-			}
-			break;
 		}
 		int screenX = camera.getScreenX(worldX);
 		int screenY = camera.getScreenY(worldY);

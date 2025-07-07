@@ -1,7 +1,8 @@
 package JavaLearn;
 
 import Entity.Player;
-import Object.SuperObject;
+import Map.ForestMap;
+import Map.Map;
 import Tile.TileManager;
 
 import javax.swing.*;
@@ -37,12 +38,7 @@ public class GamePanel extends JPanel implements Runnable{
 	
 	// ENTITY AND OBJECT
 	public Player player;
-	public SuperObject obj[] = new SuperObject[10]; 
-
-	//set player's default position
-	int playerX = 100;
-	int playerY = 100;
-	int playerSpeed = 4;  // กำหนดความเร็วผู้เล่น
+	public Map map;
 
 	public GamePanel () {
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));  // กำหนดขนาดของคลาสนี้(JPanel)
@@ -52,13 +48,14 @@ public class GamePanel extends JPanel implements Runnable{
 		this.setFocusable(true); // โฟกัสเพื่อรับอินพุตสสำคัญ
 		// Initialize camera at player center
 		camera = new Camera(23 * tileSize + tileSize / 2, 21 * tileSize + tileSize / 2, screenWidth, screenHeight);
-		tileM = new TileManager(this, camera);
+		map = new ForestMap(maxWorldCol, maxWorldRow, 10);
+		map.loadMap(this);
+		map.setObjects(this);
+		tileM = new TileManager(this, camera, map);
 		player = new Player(this, keyH, camera);
 	}
 	
 	public void setupGame() {
-		
-		aSetter.setObject();
 		
 		playMusic(0);
 	}
@@ -114,11 +111,11 @@ public class GamePanel extends JPanel implements Runnable{
 		
 		// TILE
 		tileM.draw(g2);
-		
+
 		// OBJECT
-		for(int i = 0; i < obj.length; i++) {
-			if(obj[i] != null) {
-				obj[i].draw(g2, this, camera);
+		for(int i = 0; i < map.objects.length; i++) {
+			if(map.objects[i] != null) {
+				map.objects[i].draw(g2, this, camera);
 			}
 		}
 		

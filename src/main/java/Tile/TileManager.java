@@ -2,6 +2,7 @@ package Tile;
 
 import JavaLearn.Camera;
 import JavaLearn.GamePanel;
+import Map.Map;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -15,18 +16,16 @@ public class TileManager {
 	GamePanel gp;
 	Camera camera;
 	public Tile[] tile;
-	public int mapTileNum[][];
+    Map map;
 	
-	public TileManager(GamePanel gp, Camera camera) {
+	public TileManager(GamePanel gp, Camera camera, Map map) {
 		
 		this.gp = gp;
 		this.camera = camera;
+		this.map = map;
 		
 		tile = new Tile[10]; // กำหนดขนาด 10 สำหรับ Tile types
-		mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow]; // สร้างอาเรย์สำหรับเก็บข้อมูลแผนที่
-
 		getTileImage(); // โหลดรูปภาพ Tile
-		loadMap("res/maps/world01.txt"); // โหลดข้อมูลแผนที่จากไฟล์
 	}
 	
 	public void getTileImage() {
@@ -79,7 +78,7 @@ public class TileManager {
 					
 					int num = Integer.parseInt(numbers[col]); // อาจเกิด ArrayIndexOutOfBoundsException
 					
-					mapTileNum[col][row] = num; // เก็บข้อมูลลงในอาเรย์
+					map.mapTileNum[col][row] = num; // เก็บข้อมูลลงในอาเรย์
 					col++;
 				}
 				if(col == gp.maxWorldCol) {
@@ -101,7 +100,7 @@ public class TileManager {
 	    // ปรับปรุงลูป: วนลูปทั่วทั้ง World Map (ตาม maxWorldCol, maxWorldRow)
 	    while(worldCol < gp.maxWorldCol && worldRow < gp.maxWorldRow) { 
 	        
-	        int tileNum = mapTileNum[worldCol][worldRow];
+	        int tileNum = map.mapTileNum[worldCol][worldRow];
 	        
 	        int worldX = worldCol * gp.tileSize; // คำนวณพิกัดของ Tile นี้ใน World Map
 	        int worldY = worldRow * gp.tileSize;
