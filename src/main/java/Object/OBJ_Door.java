@@ -1,13 +1,16 @@
 package Object;
 
+import Entity.Player;
+
 import javax.imageio.ImageIO;
-import java.io.File;
 import java.io.IOException;
 
 public class OBJ_Door extends SuperObject {
 	public OBJ_Door(){
 			
-			name = "Door";
+		name = "Door";
+		isInteractive = true;
+		
 		try {
 			image = ImageIO.read(getClass().getResourceAsStream("/objects/door.png"));
 			
@@ -15,5 +18,22 @@ public class OBJ_Door extends SuperObject {
 			e.printStackTrace();
 		}
 		collision = true;
+	}
+
+	@Override
+	public void onInteract(Player player) {
+		if (player.hasKey > 0) {
+			player.gp.playSE(3);
+			for (int i = 0; i < player.gp.map.objects.length; i++) {
+				if (player.gp.map.objects[i] == this) {
+					player.gp.map.objects[i] = null;
+					break;
+				}
+			}
+			player.hasKey--;
+			player.gp.ui.showMessage("You opened the door!");
+		} else {
+			player.gp.ui.showMessage("You need a key!");
+		}
 	}
 }

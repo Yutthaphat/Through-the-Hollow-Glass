@@ -12,7 +12,7 @@ import java.io.IOException;
 
 public class Player extends Entity{
 
-	GamePanel gp;
+	public GamePanel gp;
 	KeyHandler keyH;
 	Camera camera;
 	
@@ -59,48 +59,52 @@ public class Player extends Entity{
 	
 	public void update() {
 		
-		if(keyH.upPressed == true || keyH.downPressed == true || keyH.leftPressed == true || keyH.rightPressed == true) {
+		if(keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed || keyH.interactPressed) {
 			
-			if(keyH.upPressed == true){  // ขึ้นลดค่า Y
-				direction = "up";   
+			if(keyH.upPressed){
+				direction = "up";
 			}
-			else if(keyH.downPressed == true){   // ลงเพิ่มค่า Y
-				direction = "down";  
+			else if(keyH.downPressed){
+				direction = "down";
 			}
-			else if(keyH.leftPressed == true){   // ซ้ายลดค่า X
-				direction = "left";  
+			else if(keyH.leftPressed){
+				direction = "left";
 			}
-			else if(keyH.rightPressed == true){   // ขวาเพิ่มค่า X
-				direction = "right";    
+			else if(keyH.rightPressed){
+				direction = "right";
 			}
-			
+
 			// CHECK TILE COLLISION
 			collisionOn = false;
 			gp.cChecker.checkTile(this);
-			
-			// CHECK OBJECT COLLISION
+
+			//check object interact
 			int objIndex = gp.cChecker.checkObject(this, true, gp.map);
-			pickUpObject(objIndex);
-			
+			if (objIndex != 999) {
+				if (gp.map.objects[objIndex].isInteractive && keyH.interactPressed) {
+					gp.map.objects[objIndex].onInteract(this);
+				}
+			}
+
 			// IF COLLISION IS FALSE, PLAYER CAN MOVE
 			if(collisionOn == false) {
-				
+
 				switch(direction) {
 				case"up":
 					worldY -= speed;
 					break;
 				case"down":
-					worldY += speed; 
+					worldY += speed;
 					break;
 				case"left":
-					worldX -= speed; 
+					worldX -= speed;
 					break;
 				case"right":
 					worldX += speed;
 					break;
 				}
 			}
-			
+
 			spriteCounter++;
 			if(spriteCounter > 12) {
 				if(spriteNum == 1) {
@@ -121,49 +125,8 @@ public class Player extends Entity{
 			}
 		}*/
 	}
-	public void pickUpObject(int i) {
-		
-		if(i != 999) {
-			
-			String objectName = gp.map.objects[i].name;
-			
-			switch(objectName) {
-			case "Key":
-				gp.playSE(1);
-				hasKey++;
-				gp.map.objects[i] = null;
-				gp.ui.showMessage("You got a key!");
-				break;
-			case "Door":
-				if(hasKey > 0) {
-					gp.playSE(3);
-					gp.map.objects[i] = null;
-					hasKey--;
-					gp.ui.showMessage("You opened the door!");
-				}
-				else {
-					gp.ui.showMessage("You need a key!");
-				}
-				break;
-			case "Boots":
-				gp.playSE(2);
-				speed += 1;
-				gp.map.objects[i] = null;
-				gp.ui.showMessage("Speed up!");
-				break;
-			case "Chest":
-				gp.ui.gameFinished = true;
-				gp.stopMusic();
-				gp.playSE(4);
-				break;
-			}
-		}
-	}
 	
 	public void draw(Graphics2D g2) {
-		//g2.setColor(Color.WHITE);  // กำหนดสีขาว
-		// g2.fillRect(x, y, width, height);  // วาดสี่เหลี่ยมแล้วเติมสีที่กำหนดลงไป
-		//g2.fillRect(x, y, gp.tileSize, gp.tileSize);
 		BufferedImage image = null;
 
 		switch (direction) {
