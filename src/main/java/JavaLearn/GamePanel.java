@@ -1,5 +1,6 @@
 package JavaLearn;
 
+import Entity.CommonConstant;
 import Entity.Player;
 import Map.ForestMap;
 import Map.Map;
@@ -35,19 +36,22 @@ public class GamePanel extends JPanel implements Runnable{
 	Sound music = new Sound();
 	Sound se = new Sound();
 	public CollisionChecker cChecker = new CollisionChecker(this);
-	public UI ui = new UI(this);
-	Thread gameThread;  // ทำให้โปรแกรมรันได้จนกว่าเราจะหยุด 
+	public PlayerUI ui = new PlayerUI(this);
+	Thread gameThread;  // ทำให้โปรแกรมรันได้จนกว่าเราจะหยุด
+	MenuPage menuPage = new MenuPage(this);
 	
 	// ENTITY AND OBJECT
 	public Player player;
 	public Map map;
+    public int gameState = CommonConstant.STATE_MENU;
 
 	public GamePanel () {
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));  // กำหนดขนาดของคลาสนี้(JPanel)
-		this.setBackground(Color.black);   // พื้นหลังดำ
+		this.setBackground(Color.white);   // พื้นหลังดำ
 		this.setDoubleBuffered(true);  // ถ้าทุกอย่างจริง ให้วาดทุกอย่างลงที่หน่วยความจำก่อนค่อยแสดงไปบนหน้าจอจริง ทำการกระพริบทำให้ภาพลื่นไหลต่อเนื่อง
 		this.addKeyListener(keyH);  // จดจำอินพุตคีย์
 		this.setFocusable(true); // โฟกัสเพื่อรับอินพุตสสำคัญ
+
 		// Initialize camera at player center
 		camera = new Camera(23 * tileSize + tileSize / 2, 21 * tileSize + tileSize / 2, screenWidth, screenHeight);
 		map = new ForestMap(maxWorldCol, maxWorldRow, 10);
@@ -107,27 +111,29 @@ public class GamePanel extends JPanel implements Runnable{
 		camera.worldY = player.worldY + tileSize / 2;
 	}
 
+	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D)g;
-		
-		// TILE
-		tileM.draw(g2);
-
-		// OBJECT
-		for(int i = 0; i < map.objects.length; i++) {
-			if(map.objects[i] != null) {
-				map.objects[i].draw(g2, this, camera);
+		if (gameState == CommonConstant.STATE_MENU) {
+			menuPage.drawMenu(g2);
+		} else if (gameState == CommonConstant.STATE_PLAY) {
+			// TILE
+			tileM.draw(g2);
+			// OBJECT
+			for(int i = 0; i < map.objects.length; i++) {
+				if(map.objects[i] != null) {
+					map.objects[i].draw(g2, this, camera);
+				}
 			}
+			// PLAYER
+			player.draw(g2);
+			// UI
+			ui.draw(g2);
+		} else if (gameState == CommonConstant.STATE_SETTING) {
+			menuPage.drawSettings(g2);
 		}
-		
-		// PLAYER
-		player.draw(g2);
-		
-		// UI
-		ui.draw(g2);
-		
-		g2.dispose();  // วาดเสร็จแล้วให้ปิดไม่งั้นเครื่องจะช้า
+		g2.dispose();
 	}
 	public void playMusic(int i) {
 		

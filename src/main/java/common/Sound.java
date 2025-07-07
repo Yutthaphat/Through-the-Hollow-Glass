@@ -3,12 +3,15 @@ package common;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
 import java.net.URL;
 
 public class Sound {
 
 	Clip clip;
 	URL soundURL[] = new URL[30];
+    private FloatControl volumeControl;
+    private int currentVolume = 100; // 0-100
 	
 	public Sound() {
 
@@ -34,6 +37,13 @@ public class Sound {
 			AudioInputStream ais = AudioSystem.getAudioInputStream(soundURL[i]);
 			clip = AudioSystem.getClip();
 			clip.open(ais);
+            // Set volume after opening
+            try {
+                volumeControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+                setVolume(currentVolume);
+            } catch (Exception e) {
+                volumeControl = null;
+            }
 			
 		}catch(Exception e) {
 			System.out.println("Failed to load sound for index: " + i + ", error: " + e.getMessage());
@@ -64,4 +74,13 @@ public class Sound {
 			System.out.println("Clip is null in stop()");
 		}
 	}
+    public void setVolume(int volume) {
+        currentVolume = volume;
+        if (volumeControl != null) {
+            float min = volumeControl.getMinimum();
+            float max = volumeControl.getMaximum();
+            float gain = min + (max - min) * (volume / 100f);
+            volumeControl.setValue(gain);
+        }
+    }
 }

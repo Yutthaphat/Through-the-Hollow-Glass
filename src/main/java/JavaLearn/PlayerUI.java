@@ -6,7 +6,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.text.DecimalFormat;
 
-public class UI {
+public class PlayerUI {
 	
 	GamePanel gp;
 	Font arial_40, arial_80B;
@@ -19,7 +19,7 @@ public class UI {
 	double playTime;
 	DecimalFormat dFormat = new DecimalFormat("#0.00");
 	
-	public UI(GamePanel gp) {
+	public PlayerUI(GamePanel gp) {
 		this.gp = gp;
 		
 		arial_40 = new Font("Arial", Font.PLAIN, 40);
