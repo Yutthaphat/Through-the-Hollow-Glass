@@ -3,7 +3,7 @@ package Entity;
 
 import JavaLearn.GamePanel;
 import JavaLearn.KeyHandler;
-import JavaLearn.Camera;
+import common.Camera;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

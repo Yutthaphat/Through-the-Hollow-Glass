@@ -4,6 +4,9 @@ import Entity.Player;
 import Map.ForestMap;
 import Map.Map;
 import Tile.TileManager;
+import common.Camera;
+import common.CollisionChecker;
+import common.Sound;
 
 import javax.swing.*;
 import java.awt.*;
@@ -32,7 +35,6 @@ public class GamePanel extends JPanel implements Runnable{
 	Sound music = new Sound();
 	Sound se = new Sound();
 	public CollisionChecker cChecker = new CollisionChecker(this);
-	public AssetSetter aSetter = new AssetSetter(this);
 	public UI ui = new UI(this);
 	Thread gameThread;  // ทำให้โปรแกรมรันได้จนกว่าเราจะหยุด 
 	

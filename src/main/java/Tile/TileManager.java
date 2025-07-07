@@ -1,6 +1,6 @@
 package Tile;
 
-import JavaLearn.Camera;
+import common.Camera;
 import JavaLearn.GamePanel;
 import Map.Map;
 

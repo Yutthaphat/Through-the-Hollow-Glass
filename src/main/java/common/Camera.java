@@ -1,4 +1,4 @@
-package JavaLearn;
+package common;
 
 public class Camera {
     public int worldX;

@@ -1,6 +1,7 @@
-package JavaLearn;
+package common;
 
 import Entity.Entity;
+import JavaLearn.GamePanel;
 import Map.Map;
 
 public class CollisionChecker {

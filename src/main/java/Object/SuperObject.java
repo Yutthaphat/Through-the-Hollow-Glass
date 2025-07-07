@@ -1,6 +1,7 @@
 package Object;
 
 import JavaLearn.GamePanel;
+import common.Camera;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -15,14 +16,14 @@ public class SuperObject {
 		public int solidAreaDefaultX = 0;
 		public int solidAreaDefaultY = 0;
 		
-		public void draw(Graphics2D g2, GamePanel gp, JavaLearn.Camera camera) {
-        int screenX = camera.getScreenX(worldX);
-        int screenY = camera.getScreenY(worldY);
-        if(worldX + gp.tileSize > camera.worldX - camera.screenWidth/2 &&
-           worldX - gp.tileSize < camera.worldX + camera.screenWidth/2 &&
-           worldY + gp.tileSize > camera.worldY - camera.screenHeight/2 &&
-           worldY - gp.tileSize < camera.worldY + camera.screenHeight/2) {
-            g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
-        }
-    }
+		public void draw(Graphics2D g2, GamePanel gp, Camera camera) {
+			int screenX = camera.getScreenX(worldX);
+			int screenY = camera.getScreenY(worldY);
+			if(worldX + gp.tileSize > camera.worldX - camera.screenWidth/2 &&
+			   worldX - gp.tileSize < camera.worldX + camera.screenWidth/2 &&
+			   worldY + gp.tileSize > camera.worldY - camera.screenHeight/2 &&
+			   worldY - gp.tileSize < camera.worldY + camera.screenHeight/2) {
+				g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+			}
+		}
 }
