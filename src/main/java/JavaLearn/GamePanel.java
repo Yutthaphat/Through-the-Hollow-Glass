@@ -25,7 +25,8 @@ public class GamePanel extends JPanel implements Runnable{
 	int FPS = 60;	
 	
 	// SYSTEM
-	TileManager tileM = new TileManager(this);
+	public Camera camera;
+	public TileManager tileM;
 	KeyHandler keyH = new KeyHandler();
 	Sound music = new Sound();
 	Sound se = new Sound();
@@ -35,7 +36,7 @@ public class GamePanel extends JPanel implements Runnable{
 	Thread gameThread;  // ทำให้โปรแกรมรันได้จนกว่าเราจะหยุด 
 	
 	// ENTITY AND OBJECT
-	public Player player = new Player(this,keyH);
+	public Player player;
 	public SuperObject obj[] = new SuperObject[10]; 
 
 	//set player's default position
@@ -49,6 +50,10 @@ public class GamePanel extends JPanel implements Runnable{
 		this.setDoubleBuffered(true);  // ถ้าทุกอย่างจริง ให้วาดทุกอย่างลงที่หน่วยความจำก่อนค่อยแสดงไปบนหน้าจอจริง ทำการกระพริบทำให้ภาพลื่นไหลต่อเนื่อง
 		this.addKeyListener(keyH);  // จดจำอินพุตคีย์
 		this.setFocusable(true); // โฟกัสเพื่อรับอินพุตสสำคัญ
+		// Initialize camera at player center
+		camera = new Camera(23 * tileSize + tileSize / 2, 21 * tileSize + tileSize / 2, screenWidth, screenHeight);
+		tileM = new TileManager(this, camera);
+		player = new Player(this, keyH, camera);
 	}
 	
 	public void setupGame() {
@@ -94,7 +99,15 @@ public class GamePanel extends JPanel implements Runnable{
 
 	public void update() {
 		player.update();
+		// Camera follows player center
+		updateCamera();
 	}
+
+	public void updateCamera() {
+		camera.worldX = player.worldX + tileSize / 2;
+		camera.worldY = player.worldY + tileSize / 2;
+	}
+
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D)g;
@@ -105,7 +118,7 @@ public class GamePanel extends JPanel implements Runnable{
 		// OBJECT
 		for(int i = 0; i < obj.length; i++) {
 			if(obj[i] != null) {
-				obj[i].draw(g2, this);
+				obj[i].draw(g2, this, camera);
 			}
 		}
 		

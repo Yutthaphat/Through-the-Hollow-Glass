@@ -3,6 +3,7 @@ package Entity;
 
 import JavaLearn.GamePanel;
 import JavaLearn.KeyHandler;
+import JavaLearn.Camera;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -13,18 +14,15 @@ public class Player extends Entity{
 
 	GamePanel gp;
 	KeyHandler keyH;
+	Camera camera;
 	
-	public final int screenX;
-	public final int screenY;
 	public int hasKey = 0;
 	
-	public Player(GamePanel gp, KeyHandler keyH) {
+	public Player(GamePanel gp, KeyHandler keyH, Camera camera) {
 		
 		this.gp = gp;
 		this.keyH = keyH;
-		
-		screenX = gp.screenWidth/2 - (gp.tileSize/2);
-		screenY = gp.screenHeight/2 - (gp.tileSize/2);
+		this.camera = camera;
 		
 		solidArea = new Rectangle();
 		solidArea.x = 0;
@@ -202,6 +200,8 @@ public class Player extends Entity{
 			}
 			break;
 		}
+		int screenX = camera.getScreenX(worldX);
+		int screenY = camera.getScreenY(worldY);
 		g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
 	}
 }

@@ -1,20 +1,26 @@
 package Tile;
 
+import JavaLearn.Camera;
 import JavaLearn.GamePanel;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class TileManager {
 	
 	GamePanel gp;
+	Camera camera;
 	public Tile[] tile;
 	public int mapTileNum[][];
 	
-	public TileManager(GamePanel gp) {
+	public TileManager(GamePanel gp, Camera camera) {
 		
 		this.gp = gp;
+		this.camera = camera;
 		
 		tile = new Tile[10]; // กำหนดขนาด 10 สำหรับ Tile types
 		mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow]; // สร้างอาเรย์สำหรับเก็บข้อมูลแผนที่
@@ -102,16 +108,16 @@ public class TileManager {
 
 	        // คำนวณพิกัดของ Tile นี้บนหน้าจอ (สัมพันธ์กับตำแหน่งผู้เล่น)
 	        // นี่คือสูตรมาตรฐานสำหรับการทำกล้องติดตามผู้เล่นในเกม 2D
-	        int screenX = worldX - gp.player.worldX + gp.player.screenX;
-	        int screenY = worldY - gp.player.worldY + gp.player.screenY;
+	        int screenX = camera.getScreenX(worldX);
+	        int screenY = camera.getScreenY(worldY);
 	        
 	        // **เพิ่ม Optimization (ไม่บังคับ แต่ดีต่อประสิทธิภาพ):**
 	        // วาด Tile เฉพาะเมื่อ Tile นั้นอยู่ในขอบเขตการมองเห็นของหน้าจอเท่านั้น
 	        // (เผื่อขอบนอกออกไปอีก 1 Tile เพื่อป้องกันขอบดำเวลาผู้เล่นขยับ)
-	        if(worldX + gp.tileSize > gp.player.worldX - gp.player.screenX &&
-	           worldX - gp.tileSize < gp.player.worldX + gp.player.screenX && // + gp.tileSize เพื่อขยายขอบขวา
-	           worldY + gp.tileSize > gp.player.worldY - gp.player.screenY &&
-	           worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) { // + gp.tileSize เพื่อขยายขอบล่าง
+	        if(worldX + gp.tileSize > camera.worldX - camera.screenWidth/2 &&
+	           worldX - gp.tileSize < camera.worldX + camera.screenWidth/2 && // + gp.tileSize เพื่อขยายขอบขวา
+	           worldY + gp.tileSize > camera.worldY - camera.screenHeight/2 &&
+	           worldY - gp.tileSize < camera.worldY + camera.screenHeight/2) { // + gp.tileSize เพื่อขยายขอบล่าง
 	            
 	            g2.drawImage(tile[tileNum].image, screenX, screenY, gp.tileSize, gp.tileSize, null);
 	        }
