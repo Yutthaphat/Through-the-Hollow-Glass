@@ -1,0 +1,22 @@
+// อยู่ในแพ็กเกจ Object นะ คลาสนี้คือประตู
+package Object;
+
+// ดึงคลาสที่จำเป็นสำหรับการจัดการรูปภาพ
+import java.io.IOException; // ไว้จัดการ error ตอนอ่านไฟล์
+
+import javax.imageio.ImageIO; // สำหรับอ่านไฟล์รูปภาพ
+
+// คลาส OBJ_Door นี่คือ Object ประตูในเกมของเรา มันเป็นลูกของ SuperObject
+public class OBJ_Door extends SuperObject {
+	public OBJ_Door(){
+			
+		name = "Door"; // ตั้งชื่อให้มันว่า "Door"
+		try {
+			image = ImageIO.read(getClass().getResourceAsStream("/objects/door.png")); // โหลดรูปภาพประตู
+			
+		}catch(IOException e) {
+			e.printStackTrace(); // ถ้าโหลดรูปไม่ได้ก็ปริ้นท์ error ออกมา
+		}
+		collision = true; // ประตูนี้ชนได้นะ! ผู้เล่นจะเดินผ่านไปไม่ได้จนกว่าจะเปิด
+	}
+}

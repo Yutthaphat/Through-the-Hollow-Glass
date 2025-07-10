@@ -1,0 +1,22 @@
+// อยู่ในแพ็กเกจ Object นะ คลาสนี้คือหีบสมบัติ
+package Object;
+
+// ดึงคลาสที่จำเป็นสำหรับการจัดการรูปภาพ
+import java.io.IOException; // ไว้จัดการ error ตอนอ่านไฟล์
+
+import javax.imageio.ImageIO; // สำหรับอ่านไฟล์รูปภาพ
+
+// คลาส OBJ_Chest นี่คือ Object หีบสมบัติในเกมของเรา มันเป็นลูกของ SuperObject
+public class OBJ_Chest extends SuperObject {
+	public OBJ_Chest(){
+				
+		name = "Chest"; // ตั้งชื่อให้มันว่า "Chest"
+		try {
+			image = ImageIO.read(getClass().getResourceAsStream("/objects/chest.png")); // โหลดรูปภาพหีบสมบัติ
+			
+		}catch(IOException e) {
+			e.printStackTrace(); // ถ้าโหลดรูปไม่ได้ก็ปริ้นท์ error ออกมา
+		}
+		// หีบสมบัติก็ไม่มีการชนนะ เพราะเราต้องเดินไปหา
+	}
+}

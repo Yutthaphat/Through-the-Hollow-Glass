@@ -1,0 +1,168 @@
+package Tile; // บอกว่าคลาสนี้อยู่ในแพ็กเกจชื่อ Tile
+
+import java.awt.Graphics2D; // import Graphics2D สำหรับการวาดภาพ
+import java.awt.image.BufferedImage; // import BufferedImage สำหรับจัดการรูปภาพ
+import java.io.BufferedReader; // import BufferedReader สำหรับอ่านข้อมูลจากไฟล์ทีละบรรทัด
+import java.io.IOException; // import IOException สำหรับจัดการข้อผิดพลาดเกี่ยวกับการอ่าน/เขียนไฟล์
+import java.io.InputStream; // import InputStream สำหรับอ่านข้อมูลจาก Resource
+import java.io.InputStreamReader; // import InputStreamReader สำหรับแปลง InputStream เป็น Reader
+
+import javax.imageio.ImageIO; // import ImageIO สำหรับอ่านไฟล์รูปภาพ
+
+import JavaLearn.GamePanel; // import GamePanel เพื่อเข้าถึงข้อมูลเกม
+import JavaLearn.UtilityTool; // import UtilityTool สำหรับฟังก์ชันช่วยต่างๆ
+
+public class TileManager { // คลาส TileManager สำหรับจัดการ Tile และโหลดแผนที่
+	
+	GamePanel gp; // ตัวแปรอ้างอิงถึง GamePanel
+	public Tile[] tile; // อาร์เรย์สำหรับเก็บประเภทของ Tile ทั้งหมด (เช่น หญ้า, ผนัง, น้ำ)
+	public int mapTileNum[][]; // อาร์เรย์ 2 มิติสำหรับเก็บหมายเลข Tile ของแต่ละช่องในแผนที่ (world map)
+	
+	public TileManager(GamePanel gp) { // Constructor ของ TileManager
+		
+		this.gp = gp; // กำหนด GamePanel ที่รับมา
+		
+		tile = new Tile[50]; // กำหนดขนาดอาร์เรย์ Tile (รองรับ 50 ประเภท Tile)
+		mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow]; // สร้างอาร์เรย์สำหรับเก็บข้อมูลแผนที่ตามขนาด World Map (50x50)
+
+		getTileImage(); // เรียกเมธอดโหลดรูปภาพ Tile ทั้งหมด
+		loadMap("/maps/world02.txt"); // เรียกเมธอดโหลดข้อมูลแผนที่จากไฟล์ "/maps/world02.txt"
+	}
+	
+	public void getTileImage() { // เมธอดสำหรับโหลดรูปภาพ Tile ประเภทต่างๆ
+
+		// PLACEHOLDER: ส่วนนี้คือช่องว่างสำหรับ Tile ที่ยังไม่ได้กำหนดรูปภาพเฉพาะเจาะจง
+		// อาจใช้รูป "grass00" เป็นตัวแทนชั่วคราว
+		setup(0, "grass00", false); 
+		setup(1, "grass00", false);
+		setup(2, "grass00", false);
+		setup(3, "grass00", false);
+		setup(4, "grass00", false);
+		setup(5, "grass00", false);
+		setup(6, "grass00", false);	
+		setup(7, "grass00", false);	
+		setup(8, "grass00", false);	
+		setup(9, "grass00", false);	
+		// PLACEHOLDER
+		
+		// โหลดรูปภาพ Tile จริงๆ พร้อมกำหนดค่า collision
+		setup(10, "grass00", false); // Tile หญ้า 00 (เดินผ่านได้)
+		setup(11, "grass01", false); // Tile หญ้า 01 (เดินผ่านได้)
+		setup(12, "water00", true); // Tile น้ำ 00 (เดินผ่านไม่ได้)
+		setup(13, "water01", true); // Tile น้ำ 01 (เดินผ่านไม่ได้)
+		setup(14, "water02", true); // Tile น้ำ 02 (เดินผ่านไม่ได้)
+		setup(15, "water03", true); // Tile น้ำ 03 (เดินผ่านไม่ได้)
+		setup(16, "water04", true); // Tile น้ำ 04 (เดินผ่านไม่ได้)
+		setup(17, "water05", true); // Tile น้ำ 05 (เดินผ่านไม่ได้)
+		setup(18, "water06", true); // Tile น้ำ 06 (เดินผ่านไม่ได้)
+		setup(19, "water07", true); // Tile น้ำ 07 (เดินผ่านไม่ได้)
+		setup(20, "water08", true); // Tile น้ำ 08 (เดินผ่านไม่ได้)
+		setup(21, "water09", true); // Tile น้ำ 09 (เดินผ่านไม่ได้)
+		setup(22, "water10", true); // Tile น้ำ 10 (เดินผ่านไม่ได้)
+		setup(23, "water11", true); // Tile น้ำ 11 (เดินผ่านไม่ได้)
+		setup(24, "water12", true); // Tile น้ำ 12 (เดินผ่านไม่ได้)
+		setup(25, "water13", true); // Tile น้ำ 13 (เดินผ่านไม่ได้)
+		setup(26, "road00", false); // Tile ถนน 00 (เดินผ่านได้)
+		setup(27, "road01", false); // Tile ถนน 01 (เดินผ่านได้)
+		setup(28, "road02", false); // Tile ถนน 02 (เดินผ่านได้)
+		setup(29, "road03", false); // Tile ถนน 03 (เดินผ่านได้)
+		setup(30, "road04", false); // Tile ถนน 04 (เดินผ่านได้)
+		setup(31, "road05", false); // Tile ถนน 05 (เดินผ่านได้)
+		setup(32, "road06", false); // Tile ถนน 06 (เดินผ่านได้)
+		setup(33, "road07", false); // Tile ถนน 07 (เดินผ่านได้)
+		setup(34, "road08", false); // Tile ถนน 08 (เดินผ่านได้)
+		setup(35, "road09", false); // Tile ถนน 09 (เดินผ่านได้)
+		setup(36, "road10", false); // Tile ถนน 10 (เดินผ่านได้)
+		setup(37, "road11", false); // Tile ถนน 11 (เดินผ่านได้)
+		setup(38, "road12", false); // Tile ถนน 12 (เดินผ่านได้)
+		setup(39, "earth", false); // Tile ดิน (เดินผ่านได้)
+		setup(40, "wall", true); // Tile ผนัง (เดินผ่านไม่ได้)
+		setup(41, "tree", true);	// Tile ต้นไม้ (เดินผ่านไม่ได้)					
+	}
+
+	public void setup(int index, String imageName, boolean collision) { // เมธอดช่วยโหลดและปรับขนาดรูปภาพ Tile
+		
+		UtilityTool uTool = new UtilityTool(); // สร้าง Object ของ UtilityTool
+		
+		try {
+			tile[index] = new Tile(); // สร้าง Object Tile ที่ index ที่กำหนด
+			// อ่านรูปภาพ Tile จาก Resource (โฟลเดอร์ /tiles/) ตามชื่อที่กำหนด
+			tile[index].image = ImageIO.read(getClass().getResourceAsStream("/tiles/" + imageName + ".png"));
+			// ปรับขนาดรูปภาพ Tile ให้เท่ากับ tileSize ของเกม
+			tile[index].image = uTool.scaleImage(tile[index].image, gp.tileSize, gp.tileSize);
+			tile[index].collision = collision; // กำหนดสถานะ collision ของ Tile
+			
+		}catch(IOException e) { // ดักจับข้อผิดพลาดหากอ่านไฟล์รูปภาพไม่ได้
+			e.printStackTrace(); // พิมพ์ข้อผิดพลาดใน Console
+		}
+	}
+
+	public void loadMap(String filePath) { // เมธอดสำหรับโหลดข้อมูลแผนที่จากไฟล์ .txt
+		
+		try {
+			InputStream is = getClass().getResourceAsStream(filePath); // สร้าง InputStream เพื่ออ่านไฟล์จาก Resource
+			BufferedReader br = new BufferedReader(new InputStreamReader(is)); // สร้าง BufferedReader สำหรับอ่านไฟล์ทีละบรรทัด
+			
+			int col = 0; // ตัวนับคอลัมน์
+			int row = 0; // ตัวนับแถว
+			// วนลูปอ่านข้อมูลแผนที่จนกว่าจะครบขนาด World Map
+			while(col < gp.maxWorldCol && row < gp.maxWorldRow) { 
+				
+				String line = br.readLine(); // อ่านข้อมูลหนึ่งบรรทัดจากไฟล์
+				
+				while(col < gp.maxWorldCol) { // วนลูปอ่านข้อมูลในแต่ละคอลัมน์ของบรรทัดนั้น
+					
+					String numbers[] = line.split(" "); // แยกตัวเลขในบรรทัดด้วยช่องว่าง (" ")
+					
+					int num = Integer.parseInt(numbers[col]); // แปลง String ที่ได้ให้เป็น Integer
+					
+					mapTileNum[col][row] = num; // เก็บหมายเลข Tile ลงในอาร์เรย์ mapTileNum
+					col++; // เลื่อนไปยังคอลัมน์ถัดไป
+				}
+				if(col == gp.maxWorldCol) { // ถ้าอ่านครบทุกคอลัมน์ในแถวนั้นแล้ว
+					col = 0; // รีเซ็ตคอลัมน์เป็น 0
+					row++; // เลื่อนไปยังแถวถัดไป
+				}
+			}
+			br.close(); // ปิด BufferedReader
+			
+		}catch(Exception e) { // ดักจับข้อผิดพลาดหากมีปัญหาในการโหลดแผนที่
+			 // e.printStackTrace();  // สามารถ uncomment เพื่อดูข้อผิดพลาดได้
+		}
+	}
+	
+	public void draw(Graphics2D g2) { // เมธอดสำหรับวาด Tile ทั้งหมดบนหน้าจอ
+	    int worldCol = 0; // ตัวนับคอลัมน์ใน World Map
+	    int worldRow = 0; // ตัวนับแถวใน World Map
+	    
+	    // วนลูปทั่วทั้ง World Map (ตาม maxWorldCol, maxWorldRow)
+	    while(worldCol < gp.maxWorldCol && worldRow < gp.maxWorldRow) { 
+	        
+	        int tileNum = mapTileNum[worldCol][worldRow]; // เอาหมายเลข Tile จากข้อมูลแผนที่
+	        
+	        int worldX = worldCol * gp.tileSize; // คำนวณพิกัด X ของ Tile นี้ใน World Map
+	        int worldY = worldRow * gp.tileSize; // คำนวณพิกัด Y ของ Tile นี้ใน World Map
+
+	        // คำนวณพิกัดของ Tile นี้บนหน้าจอ (สัมพันธ์กับตำแหน่งผู้เล่น เพื่อทำกล้องติดตาม)
+	        int screenX = worldX - gp.player.worldX + gp.player.screenX; // คำนวณตำแหน่ง X บนจอ
+	        int screenY = worldY - gp.player.worldY + gp.player.screenY; // คำนวณตำแหน่ง Y บนจอ
+	        
+	        // เพิ่ม Optimization: วาด Tile เฉพาะเมื่อ Tile นั้นอยู่ในขอบเขตการมองเห็นของหน้าจอเท่านั้น
+	        // (เผื่อขอบนอกออกไปอีก 1 Tile เพื่อป้องกันขอบดำเวลาผู้เล่นขยับ)
+	        if(worldX + gp.tileSize > gp.player.worldX - gp.player.screenX && // ตรวจสอบว่า Tile อยู่ทางขวาของขอบจอซ้าย
+	           worldX - gp.tileSize < gp.player.worldX + gp.player.screenX && // ตรวจสอบว่า Tile อยู่ทางซ้ายของขอบจอขวา
+	           worldY + gp.tileSize > gp.player.worldY - gp.player.screenY && // ตรวจสอบว่า Tile อยู่ด้านล่างของขอบจอบน
+	           worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) { // ตรวจสอบว่า Tile อยู่ด้านบนของขอบจอล่าง
+	            
+	            g2.drawImage(tile[tileNum].image, screenX, screenY, null); // วาดรูปภาพ Tile บนหน้าจอ (ใช้รูปที่ปรับขนาดมาแล้ว)
+	        }
+
+	        worldCol++; // เลื่อนไปยังคอลัมน์ถัดไป
+	         
+	        if(worldCol == gp.maxWorldCol) { // ถ้าอ่านครบทุกคอลัมน์ในแถวนั้นแล้ว
+	            worldCol = 0; // รีเซ็ตคอลัมน์
+	            worldRow++; // เลื่อนไปยังแถวถัดไป
+	        }
+	    }
+	}
+}

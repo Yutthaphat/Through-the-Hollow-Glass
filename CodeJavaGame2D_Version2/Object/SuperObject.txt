@@ -1,0 +1,37 @@
+package Object; // บอกว่าคลาสนี้อยู่ในแพ็กเกจชื่อ Object
+
+import java.awt.Graphics2D; // import Graphics2D สำหรับการวาดภาพ
+import java.awt.Rectangle; // import Rectangle สำหรับสร้างพื้นที่สี่เหลี่ยม
+import java.awt.image.BufferedImage; // import BufferedImage สำหรับจัดการรูปภาพ
+
+import JavaLearn.GamePanel; // import GamePanel เพื่อเข้าถึงข้อมูลเกม
+import JavaLearn.UtilityTool; // import UtilityTool สำหรับฟังก์ชันช่วยต่างๆ
+
+public class SuperObject { // คลาส SuperObject เป็นคลาสแม่ของ Object ทุกชนิดในเกม
+
+		public BufferedImage image; // ตัวแปรสำหรับเก็บรูปภาพของ Object
+		public String name; // ชื่อของ Object (เช่น "Key", "Boots")
+		public boolean collision = false; // สถานะการชน: true ถ้ามีการชน, false ถ้าไม่มี
+		public int worldX, worldY; // ตำแหน่ง X และ Y ของ Object ในโลกของเกม
+		public Rectangle solidArea = new Rectangle(0, 0, 48, 48); // พื้นที่ Solid Area เริ่มต้นสำหรับ Object (ขนาด 48x48 พิกเซล)
+		public int solidAreaDefaultX = 0; // ตำแหน่ง X เริ่มต้นของ solidArea
+		public int solidAreaDefaultY = 0; // ตำแหน่ง Y เริ่มต้นของ solidArea
+		public UtilityTool uTool = new UtilityTool(); // สร้าง Object ของ UtilityTool เพื่อใช้สำหรับปรับขนาดรูปภาพ
+		
+		public void draw(Graphics2D g2, GamePanel gp) { // เมธอดสำหรับวาด Object บนหน้าจอ
+		
+	        // คำนวณพิกัดของ Object นี้บนหน้าจอ (สัมพันธ์กับตำแหน่งผู้เล่น - การทำกล้องติดตามผู้เล่น)
+	        int screenX = worldX - gp.player.worldX + gp.player.screenX; // คำนวณตำแหน่ง X บนจอ
+	        int screenY = worldY - gp.player.worldY + gp.player.screenY; // คำนวณตำแหน่ง Y บนจอ
+	        
+	        // เพิ่ม Optimization: วาด Object เฉพาะเมื่อ Object นั้นอยู่ในขอบเขตการมองเห็นของหน้าจอเท่านั้น
+	        // (เผื่อขอบออกไปอีก 1 Tile เพื่อป้องกันขอบดำเวลาผู้เล่นขยับ)
+	        if(worldX + gp.tileSize > gp.player.worldX - gp.player.screenX && // ตรวจสอบว่า Object อยู่ทางขวาของขอบจอซ้าย
+	           worldX - gp.tileSize < gp.player.worldX + gp.player.screenX && // ตรวจสอบว่า Object อยู่ทางซ้ายของขอบจอขวา
+	           worldY + gp.tileSize > gp.player.worldY - gp.player.screenY && // ตรวจสอบว่า Object อยู่ด้านล่างของขอบจอบน
+	           worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) { // ตรวจสอบว่า Object อยู่ด้านบนของขอบจอล่าง
+	             
+	            g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null); // วาดรูปภาพ Object บนหน้าจอตามตำแหน่งและขนาด Tile
+	        }
+		}
+}

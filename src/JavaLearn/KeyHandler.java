@@ -5,6 +5,8 @@ import java.awt.event.KeyListener;
 
 public class KeyHandler implements KeyListener{  // รับค่าคีย์บอร์ด
 	public boolean upPressed, downPressed, leftPressed, rightPressed;
+	// DEBUG
+	boolean checkDrawTime = false;
 	
 	@Override
 	public void keyTyped(KeyEvent e) {
@@ -16,16 +18,26 @@ public class KeyHandler implements KeyListener{  // รับค่าคีย�
 		int code = e.getKeyCode();
 		if (code == KeyEvent.VK_W){  // W เดินขึ้น 
 		upPressed = true;
-	}
-	if (code == KeyEvent.VK_S){    // S เดินลง
-		downPressed = true;
-	}	
-	if (code == KeyEvent.VK_A){   // A เดินซ้าย
-		leftPressed = true;
-	}		
-	if (code == KeyEvent.VK_D){   // D เดินขวา
-			rightPressed = true;
+		}
+		if (code == KeyEvent.VK_S){    // S เดินลง
+			downPressed = true;
 		}	
+		if (code == KeyEvent.VK_A){   // A เดินซ้าย
+			leftPressed = true;
+		}		
+		if (code == KeyEvent.VK_D){   // D เดินขวา
+				rightPressed = true;
+		}	
+	
+		// DEBUG
+		if (code == KeyEvent.VK_T){   // D เดินขวา
+			if(checkDrawTime == false) {
+				checkDrawTime = true;
+			}
+			else if(checkDrawTime == true) {
+				checkDrawTime = false;
+			}
+		}
 	}
 	
 	@Override

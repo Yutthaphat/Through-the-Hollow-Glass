@@ -1,0 +1,9 @@
+package Tile; // บอกว่าคลาสนี้อยู่ในแพ็กเกจชื่อ Tile
+
+import java.awt.image.BufferedImage; // import BufferedImage สำหรับจัดการรูปภาพ
+
+public class Tile { // คลาส Tile สำหรับพื้นผิวแต่ละช่องในแผนที่
+	
+	public BufferedImage image; // รูปภาพของ Tile นั้นๆ
+	public boolean collision = false; // สถานะการชน: true ถ้าผู้เล่นเดินผ่านไม่ได้, false ถ้าเดินผ่านได้
+}

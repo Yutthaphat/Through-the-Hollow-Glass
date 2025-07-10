@@ -1,0 +1,28 @@
+package Object; // บอกว่าคลาสนี้อยู่ในแพ็กเกจชื่อ Object
+
+import java.io.IOException; // import IOException สำหรับจัดการข้อผิดพลาดเกี่ยวกับการอ่าน/เขียนไฟล์
+
+import javax.imageio.ImageIO; // import ImageIO สำหรับอ่านไฟล์รูปภาพ
+
+import JavaLearn.GamePanel; // import GamePanel เพื่อเข้าถึงข้อมูลเกม
+
+public class OBJ_Chest extends SuperObject { // คลาส OBJ_Chest สืบทอดจาก SuperObject
+	
+	GamePanel gp; // ตัวแปรอ้างอิงถึง GamePanel
+	
+	public OBJ_Chest(GamePanel gp){ // Constructor ของ OBJ_Chest
+		
+		this.gp = gp; // กำหนด GamePanel ที่รับมา
+				
+		name = "Chest"; // กำหนดชื่อของ Object เป็น "Chest"
+		try {
+			// โหลดรูปภาพหีบสมบัติจาก Resource
+			image = ImageIO.read(getClass().getResourceAsStream("/objects/chest.png"));
+			// ปรับขนาดรูปภาพ
+			image = uTool.scaleImage(image, gp.tileSize, gp.tileSize);
+			
+		}catch(IOException e) { // ดักจับข้อผิดพลาด
+			e.printStackTrace();
+		}
+	}
+}

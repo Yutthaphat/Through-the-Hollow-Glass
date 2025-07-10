@@ -1,0 +1,61 @@
+package JavaLearn; // บอกว่าคลาสนี้อยู่ในแพ็กเกจชื่อ JavaLearn
+
+import java.awt.event.KeyEvent; // import คลาส KeyEvent สำหรับจัดการอีเวนต์คีย์บอร์ด
+import java.awt.event.KeyListener; // import อินเทอร์เฟซ KeyListener
+
+public class KeyHandler implements KeyListener{  // คลาสสำหรับจัดการการกดปุ่มบนคีย์บอร์ด (implements KeyListener)
+	public boolean upPressed, downPressed, leftPressed, rightPressed; // ตัวแปรสถานะการกดปุ่มทิศทาง (true = ถูกกด, false = ถูกปล่อย)
+	// ส่วน DEBUG
+	boolean checkDrawTime = false; // ตัวแปรสำหรับเปิด/ปิดโหมดจับเวลาการวาด (false = ปิด, true = เปิด)
+	
+	@Override // การ Overrides เมธอด keyTyped จาก KeyListener (ไม่ได้ใช้งานในโค้ดนี้)
+	public void keyTyped(KeyEvent e) { 
+		// เมธอดนี้ถูกเรียกเมื่อมีการพิมพ์อักขระ (ตัวอักษร)
+	}
+	
+	@Override // การ Overrides เมธอด keyPressed จาก KeyListener
+	public void keyPressed(KeyEvent e) { // เมธอดนี้ถูกเรียกเมื่อมีการกดปุ่มลง
+		int code = e.getKeyCode(); // รับโค้ดปุ่มที่ถูกกด
+		
+		if (code == KeyEvent.VK_W){  // ถ้ากดปุ่ม W
+			upPressed = true; // ตั้งค่าว่าปุ่มขึ้นถูกกด
+		}
+		if (code == KeyEvent.VK_S){    // ถ้ากดปุ่ม S
+			downPressed = true; // ตั้งค่าว่าปุ่มลงถูกกด
+		}	
+		if (code == KeyEvent.VK_A){   // ถ้ากดปุ่ม A
+			leftPressed = true; // ตั้งค่าว่าปุ่มซ้ายถูกกด
+		}		
+		if (code == KeyEvent.VK_D){   // ถ้ากดปุ่ม D
+			rightPressed = true; // ตั้งค่าว่าปุ่มขวาถูกกด
+		}	
+	
+		// ส่วน DEBUG (สำหรับสลับโหมดจับเวลาการวาด)
+		if (code == KeyEvent.VK_T){   // ถ้ากดปุ่ม T
+			if(checkDrawTime == false) { // ถ้าโหมดจับเวลาปิดอยู่
+				checkDrawTime = true; // เปิดโหมดจับเวลา
+			}
+			else if(checkDrawTime == true) { // ถ้าโหมดจับเวลาเปิดอยู่
+				checkDrawTime = false; // ปิดโหมดจับเวลา
+			}
+		}
+	}
+	
+	@Override // การ Overrides เมธอด keyReleased จาก KeyListener
+	public void keyReleased(KeyEvent e) { // เมธอดนี้ถูกเรียกเมื่อมีการปล่อยปุ่ม
+		int code = e.getKeyCode(); // รับโค้ดปุ่มที่ถูกปล่อย
+		
+		if (code == KeyEvent.VK_W){  // ถ้าปล่อยปุ่ม W
+			upPressed = false; // ตั้งค่าว่าปุ่มขึ้นถูกปล่อย
+		}
+		if (code == KeyEvent.VK_S){    // ถ้าปล่อยปุ่ม S
+			downPressed = false; // ตั้งค่าว่าปุ่มลงถูกปล่อย
+		}	
+		if (code == KeyEvent.VK_A){   // ถ้าปล่อยปุ่ม A
+			leftPressed = false; // ตั้งค่าว่าปุ่มซ้ายถูกปล่อย
+		}		
+		if (code == KeyEvent.VK_D){   // ถ้าปล่อยปุ่ม D
+			rightPressed = false; // ตั้งค่าว่าปุ่มขวาถูกปล่อย
+		}
+	}
+}

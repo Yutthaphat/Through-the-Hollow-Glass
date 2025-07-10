@@ -1,0 +1,162 @@
+// นี่คือแพ็กเกจหลักของเกมเรานะ
+package JavaLearn;
+
+// พวกนี้คือคลาสที่จำเป็นสำหรับการวาดภาพและสร้างหน้าต่างเกม
+import java.awt.Color; // เอาไว้กำหนดสี
+import java.awt.Dimension; // เอาไว้กำหนดขนาด
+import java.awt.Graphics; // เป็นคลาสพื้นฐานสำหรับวาดรูป
+import java.awt.Graphics2D; // อันนี้เทพกว่า Graphics ธรรมดา วาด 2D ได้ดีกว่า
+
+import javax.swing.JPanel; // ใช้สร้างพื้นที่สำหรับวาดเกมของเรา (เหมือนเป็นแคนวาส)
+
+// ดึงคลาส Player, SuperObject, TileManager เข้ามาใช้
+import Entity.Player;
+import Object.SuperObject;
+import Tile.TileManager;
+
+// คลาส GamePanel นี่แหละคือหัวใจของเกมเราเลย เป็นเหมือนกระดานที่เราจะวาดทุกอย่างลงไป
+// มันเป็น JPanel (พื้นที่วาดรูป) และ implements Runnable (เพื่อให้มันรันเป็นเธรดแยกได้)
+public class GamePanel extends JPanel implements Runnable{
+	
+	// --- การตั้งค่าหน้าจอและขนาดของ Tile ---
+	final int originalTileSize = 16;  // ขนาดเริ่มต้นของรูป Tile (16x16 พิกเซล)
+	final int scale = 3; // เราจะขยายรูป Tile ขึ้น 3 เท่า
+	public final int tileSize = originalTileSize * scale;  // ดังนั้น Tile ของเราจะมีขนาด 48x48 พิกเซล
+	public final int maxScreenCol = 16;  // จำนวนคอลัมน์ของ Tile ที่จะแสดงบนหน้าจอ
+	public final int maxScreenRow = 12;  // จำนวนแถวของ Tile ที่จะแสดงบนหน้าจอ
+	public final int screenWidth = tileSize * maxScreenCol;  // ความกว้างของหน้าจอเกม (768 พิกเซล)
+	public final int screenHeight = tileSize * maxScreenRow;  // ความสูงของหน้าจอเกม (576 พิกเซล)
+	
+	// --- การตั้งค่าโลกของเกม (World Map) ---
+	public final int maxWorldCol = 50; // จำนวนคอลัมน์ของ Tile ใน World Map ทั้งหมด
+	public final int maxWorldRow = 50; // จำนวนแถวของ Tile ใน World Map ทั้งหมด
+
+	// --- เฟรมเรต (FPS) ---
+	int FPS = 60;	
+	
+	// --- ระบบต่างๆ ของเกม ---
+	TileManager tileM = new TileManager(this); // ตัวจัดการ Tile ในแผนที่
+	KeyHandler keyH = new KeyHandler(); // ตัวจัดการปุ่มกดจากคีย์บอร์ด
+	Sound music = new Sound(); // ตัวเล่นเพลงพื้นหลัง
+	Sound se = new Sound(); // ตัวเล่นเสียงประกอบ (Sound Effects)
+	public CollisionChecker cChecker = new CollisionChecker(this); // ตัวตรวจสอบการชน
+	public AssetSetter aSetter = new AssetSetter(this); // ตัวจัดวาง Object ต่างๆ ในเกม
+	public UI ui = new UI(this); // ตัวจัดการ User Interface (UI)
+	Thread gameThread;  // นี่คือเธรดสำหรับรัน Loop เกม ทำให้เกมของเราทำงานได้ตลอดเวลาจนกว่าเราจะสั่งหยุด
+	
+	// --- ตัวละครและวัตถุในเกม ---
+	public Player player = new Player(this,keyH); // สร้างผู้เล่นขึ้นมา
+	public SuperObject obj[] = new SuperObject[10]; // อาเรย์สำหรับเก็บ Object ต่างๆ ในเกม (รองรับได้ 10 Object)
+
+	// พวกตัวแปร playerX, playerY, playerSpeed เก่าๆ นี่ไม่ได้ใช้แล้วนะ เพราะย้ายไปอยู่ในคลาส Player แทน
+	// int playerX = 100;
+	// int playerY = 100;
+	// int playerSpeed = 4;  // กำหนดความเร็วผู้เล่น
+
+	// Constructor ของ GamePanel
+	public GamePanel () {
+		this.setPreferredSize(new Dimension(screenWidth, screenHeight));  // กำหนดขนาดที่ GamePanel นี้ต้องการ
+		this.setBackground(Color.black);   // ตั้งพื้นหลังเป็นสีดำ
+		this.setDoubleBuffered(true);  // เปิดใช้ Double Buffering เพื่อให้ภาพที่วาดดูราบรื่น ไม่กระพริบ
+		this.addKeyListener(keyH);  // บอกว่า GamePanel นี้จะรับฟังการกดปุ่มจาก KeyHandler นะ
+		this.setFocusable(true); // ทำให้ GamePanel สามารถรับโฟกัสเพื่อรับอินพุตจากคีย์บอร์ดได้
+	}
+	
+	// เมธอดนี้ไว้ตั้งค่าเริ่มต้นของเกมก่อนจะเริ่ม Loop เกมจริงๆ
+	public void setupGame() {
+		
+		aSetter.setObject(); // ให้ AssetSetter วาง Object ต่างๆ ลงไปใน World Map
+		
+		playMusic(0); // เริ่มเล่นเพลงพื้นหลังเพลงแรก (ที่ index 0)
+	}
+	
+	// เมธอดนี้ไว้สำหรับเริ่ม Game Thread
+	public void startGameThread(){
+		gameThread = new Thread(this); // สร้างเธรดใหม่ โดยบอกว่าให้ GamePanel นี้เป็นตัวที่รัน
+		gameThread.start(); // เริ่มต้นเธรด ทำให้เมธอด run() ถูกเรียกทำงาน
+	}
+
+	// เมธอด run() นี่แหละคือ Game Loop ของเรา จะทำงานวนไปเรื่อยๆ ตราบใดที่เกมยังไม่หยุด
+	@Override
+	public void run() {	
+		// คำนวณว่าแต่ละเฟรมควรจะใช้เวลานานแค่ไหน (1 วินาที / FPS) หน่วยเป็นนาโนวินาที
+		double drawInterval = 1000000000/FPS;  //เช่น FPS = 60 → 16,666,666 ns ต่อเฟรม
+		double delta = 0;   // ตัวสะสมเวลา ดูว่าถึงเวลาต้องวาดเฟรมใหม่รึยัง
+		long lastTime = System.nanoTime();  // เก็บเวลาล่าสุดที่เกิดเหตุการณ์
+		long currentTime; // เก็บเวลาปัจจุบัน
+		long timer = 0;   // ตัวจับเวลาครบ 1 วินาที ไว้โชว์ FPS
+		int drawCount = 0;   // นับจำนวนเฟรมที่วาดไปใน 1 วินาที
+		
+		while(gameThread != null){    // ตราบใดที่เธรดเกมยังทำงานอยู่ (เกมยังไม่หยุด) → ก็จะวนลูปนี้ไปเรื่อยๆ
+			currentTime = System.nanoTime();   // ดึงเวลาปัจจุบัน
+			delta += (currentTime - lastTime) / drawInterval;  // เอาเวลาที่ผ่านไปมารวมใน delta
+			timer += (currentTime - lastTime);    // เอาเวลาที่ผ่านไปมารวมใน timer (ไว้เช็คครบ 1 วิ)
+			lastTime = currentTime; // อัปเดต lastTime เป็นเวลาปัจจุบัน
+			
+			if(delta >= 1){ // ถ้า delta มีค่ามากกว่าหรือเท่ากับ 1 แปลว่าถึงเวลาต้องวาดเฟรมถัดไปแล้ว
+				update();      // เรียกเมธอด update() เพื่ออัปเดตสถานะเกมทั้งหมด
+				repaint();     // เรียกเมธอด paintComponent() (ของ JPanel) เพื่อวาดหน้าจอใหม่
+				delta--;       // ลบ delta ลง 1 (เพราะเราวาดไปแล้ว 1 เฟรม)
+				drawCount++;   // นับจำนวนเฟรมที่วาดไปเพิ่ม
+			}
+
+			if(timer >= 1000000000){  // ถ้า timer ครบ 1,000,000,000 นาโนวินาที (เท่ากับ 1 วินาที)
+				System.out.println("FPS: " + drawCount); // ก็ปริ้นท์ FPS จริงๆ ที่วาดได้ในวินาทีนั้น
+				drawCount = 0; // รีเซ็ตตัวนับเฟรม
+				timer = 0; // รีเซ็ต timer
+			}
+		}
+	}
+
+	// เมธอด update() นี่ไว้สำหรับอัปเดตสถานะของเกมและตัวละครต่างๆ
+	public void update() {
+		player.update(); // สั่งให้ผู้เล่นอัปเดตสถานะตัวเอง (เคลื่อนที่, เช็คชน)
+	}
+
+	// เมธอด paintComponent() นี่ไว้สำหรับวาดรูปภาพต่างๆ ลงบนจอ
+	// Graphics g คือเหมือนปากกาที่ใช้วาดรูป
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g); // เรียกเมธอดของ JPanel เพื่อวาดพื้นหลังก่อน
+		Graphics2D g2 = (Graphics2D)g; // แปลงปากกาเป็น Graphics2D เพื่อความสามารถในการวาดที่เยอะขึ้น
+		
+		// --- วาด Tile ---
+		tileM.draw(g2); // วาดแผนที่ Tile
+
+		// --- วาด Object ---
+		// วนลูปวาด Object ทุกตัวในอาเรย์ obj
+		for(int i = 0; i < obj.length; i++) {
+			if(obj[i] != null) { // เช็คว่า Object นั้นยังมีอยู่มั้ย (ไม่ได้ถูกเก็บไปแล้ว)
+				obj[i].draw(g2, this); // วาด Object
+			}
+		}
+		
+		// --- วาด Player ---
+		player.draw(g2); // วาดผู้เล่นของเรา
+
+		// --- วาด UI ---
+		ui.draw(g2); // วาดส่วน User Interface (UI)
+		
+		g2.dispose();  // วาดเสร็จแล้วก็ "ทิ้ง" Graphics2D ซะ จะได้ไม่เปลืองหน่วยความจำ
+	}
+
+	// เมธอดสำหรับเล่นเพลงพื้นหลัง
+	public void playMusic(int i) {
+		
+		music.setFile(i); // กำหนดไฟล์เพลงที่จะเล่น (ตาม index ที่ส่งมา)
+		music.play(); // เริ่มเล่นเพลง
+		music.loop(); // สั่งให้เพลงเล่นซ้ำไปเรื่อยๆ
+	}
+
+	// เมธอดสำหรับหยุดเพลงพื้นหลัง
+	public void stopMusic() {
+		
+		music.stop(); // สั่งหยุดเพลง
+	}
+
+	// เมธอดสำหรับเล่นเสียงประกอบ (Sound Effect)
+	public void playSE(int i) {
+		
+		se.setFile(i); // กำหนดไฟล์เสียงประกอบที่จะเล่น
+		se.play(); // เริ่มเล่นเสียงประกอบ
+	}
+}

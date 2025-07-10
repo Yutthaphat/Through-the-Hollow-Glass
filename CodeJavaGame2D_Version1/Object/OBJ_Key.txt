@@ -1,0 +1,22 @@
+// อยู่ในแพ็กเกจ Object นะ คลาสนี้คือกุญแจ
+package Object;
+
+// ดึงคลาสที่จำเป็นสำหรับการจัดการรูปภาพ
+import java.io.IOException; // ไว้จัดการ error ตอนอ่านไฟล์
+
+import javax.imageio.ImageIO; // สำหรับอ่านไฟล์รูปภาพ
+
+// คลาส OBJ_Key นี่คือ Object กุญแจในเกมของเรา มันเป็นลูกของ SuperObject
+public class OBJ_Key extends SuperObject {
+	public OBJ_Key(){
+		
+		name = "Key"; // ตั้งชื่อให้มันว่า "Key"
+		try {
+			image = ImageIO.read(getClass().getResourceAsStream("/objects/key.png")); // โหลดรูปภาพกุญแจ
+			
+		}catch(IOException e) {
+			e.printStackTrace(); // ถ้าโหลดรูปไม่ได้ก็ปริ้นท์ error ออกมา
+		}
+		// กุญแจไม่มีการชนนะ เพราะเราต้องเดินไปเก็บ
+	}
+}

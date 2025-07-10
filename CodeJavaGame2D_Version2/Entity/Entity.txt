@@ -1,0 +1,21 @@
+package Entity; // บอกว่าคลาสนี้อยู่ในแพ็กเกจชื่อ Entity
+
+import java.awt.Rectangle; // import คลาส Rectangle สำหรับสร้างพื้นที่สี่เหลี่ยม
+import java.awt.image.BufferedImage; // import คลาส BufferedImage สำหรับจัดการรูปภาพ
+
+public class Entity { // คลาสหลักชื่อ Entity เป็นแม่ของตัวละครและวัตถุต่างๆ
+	
+	public int worldX, worldY; // ตำแหน่ง X และ Y ของ Entity ในโลกของเกม
+	public int speed; // ความเร็วในการเคลื่อนที่ของ Entity
+	
+	// ตัวแปรเก็บรูปภาพของ Entity สำหรับทิศทางต่างๆ (ขึ้น, ลง, ซ้าย, ขวา)
+	// แต่ละทิศทางมี 2 รูปเพื่อใช้ทำอนิเมชันเดิน
+	public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;  
+	public String direction; // ทิศทางที่ Entity กำลังหันหน้าไป (เช่น "up", "down")
+	
+	public int spriteCounter = 0; // ตัวนับเฟรมสำหรับควบคุมการเปลี่ยนรูปภาพทำอนิเมชัน
+	public int spriteNum = 1; // ตัวระบุว่าตอนนี้กำลังใช้รูปที่ 1 หรือ 2 ในการทำอนิเมชัน
+	public Rectangle solidArea; // พื้นที่สี่เหลี่ยมที่ใช้ในการตรวจสอบการชน (Hitbox)
+	public int solidAreaDefaultX, solidAreaDefaultY; // ตำแหน่งเริ่มต้นของ solidArea สำหรับรีเซ็ตหลังการตรวจสอบการชน
+	public boolean collisionOn = false; // สถานะการชน: true ถ้ามีการชน, false ถ้าไม่มี
+}

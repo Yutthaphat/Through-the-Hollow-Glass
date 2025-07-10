@@ -1,0 +1,32 @@
+// นี่คือแพ็กเกจสำหรับเก็บพวกตัวละครหรือสิ่งของต่างๆ ในเกมนะ
+package Entity;
+
+// อันนี้คือคลาสที่เราต้องเอาเข้ามาใช้ช่วยจัดการเรื่องรูปภาพกับพื้นที่ชนกัน
+import java.awt.Rectangle; // เหมือนกล่องสี่เหลี่ยมไว้วัดว่าชนกันมั้ย
+import java.awt.image.BufferedImage; // ไว้เก็บรูปภาพในหน่วยความจำ
+
+// คลาส Entity นี่แหละคือตัวแม่ของทุกอย่างในเกม ไม่ว่าจะเป็นผู้เล่น ศัตรู หรือของต่างๆ
+public class Entity {
+	
+	// worldX, worldY คือตำแหน่งของวัตถุนั้นๆ ในโลกของเกม (ไม่ใช่บนหน้าจอนะ)
+	public int worldX, worldY;
+	// speed คือความเร็วในการเคลื่อนที่
+	public int speed;
+	
+	// พวก up1, up2 นี่คือไว้เก็บรูปตัวละครตอนเดินขึ้น (มี 2 รูปไว้ทำท่าเดินให้ดูขยับได้)
+	// down1, down2 ก็ตอนเดินลง, left1, left2 ตอนเดินซ้าย, right1, right2 ตอนเดินขวา
+	public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;  // ใช้เพื่อเก็บไฟล์รูปภาพ
+	// direction คือทิศทางที่ตัวละครกำลังหันหน้าไป หรือกำลังเดินไป
+	public String direction;
+	
+	// spriteCounter คือตัวนับเวลาสำหรับสลับรูปภาพให้มันดูขยับได้ (animation)
+	public int spriteCounter = 0;
+	// spriteNum คือบอกว่าตอนนี้กำลังโชว์รูปที่ 1 หรือรูปที่ 2 ของท่าเดิน
+	public int spriteNum = 1;
+	// solidArea นี่คือพื้นที่ที่เรากำหนดให้มัน "ชน" ได้จริงๆ ของวัตถุ
+	public Rectangle solidArea;
+	// solidAreaDefaultX, solidAreaDefaultY คือตำแหน่งเริ่มต้นของ solidArea (ไว้ใช้รีเซ็ตหลังจากเช็คชนเสร็จ)
+	public int solidAreaDefaultX, solidAreaDefaultY;
+	// collisionOn เป็น true ถ้ามีการชนเกิดขึ้น, false ถ้าไม่มี
+	public boolean collisionOn = false;
+}

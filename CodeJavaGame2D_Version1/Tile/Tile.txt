@@ -1,0 +1,12 @@
+// อยู่ในแพ็กเกจ Tile นะ คลาสนี้คือ Tile หนึ่งแผ่น
+package Tile;
+
+// ดึงคลาส BufferedImage มาใช้เก็บรูป
+import java.awt.image.BufferedImage;
+
+// คลาส Tile นี่คือแม่แบบของ Tile แต่ละประเภทในเกมของเรา (เหมือนบล็อกปูพื้น)
+public class Tile {
+	
+	public BufferedImage image; // รูปภาพของ Tile แผ่นนี้
+	public boolean collision = false; // บอกว่า Tile แผ่นนี้ชนได้รึเปล่า (true = ชนได้, false = เดินผ่านได้)
+}

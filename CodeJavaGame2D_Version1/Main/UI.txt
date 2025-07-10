@@ -1,0 +1,108 @@
+// อยู่ในแพ็กเกจ JavaLearn นะ คลาสนี้สำหรับแสดง UI
+package JavaLearn;
+
+// พวกนี้คือคลาสที่ต้อง import มาใช้ในการวาดข้อความ รูปภาพ และจัดรูปแบบตัวเลข
+import java.awt.Color; // กำหนดสี
+import java.awt.Font; // กำหนดฟอนต์
+import java.awt.Graphics2D; // วาด 2D
+import java.awt.image.BufferedImage; // เก็บรูป
+import java.text.DecimalFormat; // จัดรูปแบบเลขทศนิยม
+
+import Object.OBJ_Key; // ดึงคลาส OBJ_Key มาใช้เพื่อเอา icon กุญแจมาแสดง
+
+// คลาส UI (User Interface) นี่แหละคือจอแสดงผลข้อมูลในเกมของเรา
+public class UI {
+	
+	GamePanel gp; // อ้างอิงถึง GamePanel เพื่อดึงข้อมูลต่างๆ ในเกมมาแสดง
+	Font arial_40, arial_80B; // ฟอนต์ที่เราจะใช้แสดงข้อความ
+	BufferedImage keyImage; // รูปภาพกุญแจเล็กๆ ที่จะแสดงใน UI
+	public boolean messageOn = false; // บอกว่าตอนนี้กำลังแสดงข้อความอะไรอยู่บนจอไหม
+	public String message = ""; // ข้อความที่จะแสดง
+	int messageCounter = 0; // ตัวนับเวลาสำหรับควบคุมว่าข้อความจะหายไปเมื่อไหร่
+	public boolean gameFinished = false; // บอกว่าเกมจบแล้วรึยัง
+	
+	double playTime; // เวลาที่ผู้เล่นเล่นไปแล้ว
+	DecimalFormat dFormat = new DecimalFormat("#0.00"); // ตัวจัดรูปแบบให้เลขทศนิยมมี 2 ตำแหน่ง (เช่น 12.34)
+	
+	// Constructor ของ UI class
+	public UI(GamePanel gp) {
+		this.gp = gp;
+		
+		arial_40 = new Font("Arial", Font.PLAIN, 40); // สร้างฟอนต์ Arial ธรรมดา ขนาด 40
+		arial_80B = new Font("Arial", Font.BOLD, 80); // สร้างฟอนต์ Arial ตัวหนา ขนาด 80
+		OBJ_Key key = new OBJ_Key(); // สร้าง Object กุญแจชั่วคราวเพื่อดึงรูปภาพของกุญแจมาใช้
+		keyImage = key.image; // เก็บรูปภาพกุญแจ
+	}
+	
+	// เมธอด showMessage สำหรับสั่งให้แสดงข้อความบนจอ
+	public void showMessage(String text) {
+		
+		message = text; // กำหนดข้อความ
+		messageOn = true; // ตั้งสถานะว่าให้แสดงข้อความ
+	}
+	
+	// เมธอด draw() สำหรับวาด UI บนหน้าจอ
+	public void draw(Graphics2D g2) {
+		
+		// ถ้าเกมจบแล้ว (gameFinished เป็น true)
+		if(gameFinished == true) {
+			
+			g2.setFont(arial_40); // ตั้งฟอนต์ขนาด 40
+			g2.setColor(Color.white); // ตั้งสีข้อความเป็นสีขาว
+			
+			String text; // ตัวแปรสำหรับเก็บข้อความที่จะวาด
+			int textLength; // ความยาวของข้อความ (เป็นพิกเซล)
+			int x; // ตำแหน่ง X ที่จะวาดข้อความ
+			int y; // ตำแหน่ง Y ที่จะวาดข้อความ
+			
+			// วาดข้อความ "You found the treasure!"
+			text = "You found the treasure!";
+			textLength = (int)g2.getFontMetrics().getStringBounds(text, g2).getWidth(); // คำนวณความยาวของข้อความ
+			x = gp.screenWidth/2 - textLength/2; // คำนวณตำแหน่ง X ให้อยู่ตรงกลางจอ
+			y = gp.screenHeight/2 - (gp.tileSize*3); // กำหนดตำแหน่ง Y
+			g2.drawString(text, x, y); // วาดข้อความ
+			
+			// วาดข้อความแสดงเวลาที่เล่น
+			text = "Your Time is :" + dFormat.format(playTime) + "!";
+			textLength = (int)g2.getFontMetrics().getStringBounds(text, g2).getWidth();
+			x = gp.screenWidth/2 - textLength/2;
+			y = gp.screenHeight/2 + (gp.tileSize*4);
+			g2.drawString(text, x, y);
+			
+			// วาดข้อความ "Congratulations!" ตัวใหญ่ๆ สีเหลือง
+			g2.setFont(arial_80B); // เปลี่ยนฟอนต์เป็นขนาด 80 ตัวหนา
+			g2.setColor(Color.yellow); // เปลี่ยนสีเป็นสีเหลือง
+			text = "Congratulations!";
+			textLength = (int)g2.getFontMetrics().getStringBounds(text, g2).getWidth();
+			x = gp.screenWidth/2 - textLength/2;
+			y = gp.screenHeight/2 + (gp.tileSize*2);
+			g2.drawString(text, x, y);
+			
+			gp.gameThread = null; // ตั้งค่า gameThread เป็น null เพื่อให้ Game Loop หยุดทำงาน (เกมจบจริงจัง)
+		}
+		else { // ถ้าเกมยังไม่จบ
+			g2.setFont(arial_40); // ตั้งฟอนต์ขนาด 40
+			g2.setColor(Color.white); // ตั้งสีข้อความเป็นสีขาว
+			g2.drawImage(keyImage, gp.tileSize/2, gp.tileSize/2, gp.tileSize, gp.tileSize, null); // วาดรูปกุญแจเล็กๆ ที่มุมซ้ายบน
+			g2.drawString("x " + gp.player.hasKey, 74, 65); // วาดจำนวนกุญแจที่ผู้เล่นมีถัดจากรูปกุญแจ
+			
+			// --- แสดงเวลาที่เล่น ---
+			playTime += (double)1/60; // เพิ่มเวลาเล่นไป 1/60 วินาทีต่อเฟรม
+			g2.drawString("Time : " + dFormat.format(playTime), gp.tileSize*11, 65); // วาดเวลาที่เล่นที่มุมขวาบน
+			
+			// --- แสดงข้อความชั่วคราว ---
+			if(messageOn == true) { // ถ้ามีข้อความที่ต้องแสดง
+				
+				g2.setFont(g2.getFont().deriveFont(30F)); // ปรับขนาดฟอนต์ของข้อความชั่วคราวให้เล็กลงหน่อย
+				g2.drawString(message, gp.tileSize/2, gp.tileSize*5); // วาดข้อความ
+				
+				messageCounter++; // เพิ่มตัวนับเวลา
+				
+				if(messageCounter > 120) { // ถ้าข้อความแสดงนานเกิน 120 เฟรม (ประมาณ 2 วินาที ที่ 60 FPS)
+					messageCounter = 0; // รีเซ็ตตัวนับ
+					messageOn = false; // ตั้งค่าว่าไม่ต้องแสดงข้อความแล้ว
+				}
+			}
+		}
+	}
+}

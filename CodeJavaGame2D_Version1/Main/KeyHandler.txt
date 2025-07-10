@@ -1,0 +1,58 @@
+// อยู่ในแพ็กเกจ JavaLearn นะ คลาสนี้ไว้จัดการกับการกดปุ่ม
+package JavaLearn;
+
+// พวกนี้คือคลาสที่ต้อง import มาใช้ในการจับ Event ของคีย์บอร์ด
+import java.awt.event.KeyEvent; // สำหรับ Event ของการกดปุ่ม
+import java.awt.event.KeyListener; // นี่คือ Interface ที่เราต้อง implement เพื่อรับ Event ปุ่ม
+
+// คลาส KeyHandler นี่แหละคือผู้ฟังปุ่มกดของเรา มัน implements KeyListener เพื่อบอกว่าเราจะรับฟังปุ่มกดนะ
+public class KeyHandler implements KeyListener{  // รับค่าคีย์บอร์ด
+	// พวก upPressed, downPressed ฯลฯ เป็น boolean ที่จะเก็บสถานะว่าปุ่มนั้นๆ ถูกกดอยู่รึเปล่า
+	public boolean upPressed, downPressed, leftPressed, rightPressed;
+	
+	// เมธอด keyTyped จะถูกเรียกเมื่อมีการ "พิมพ์" ตัวอักษร (กดแล้วปล่อย) เกมนี้อาจจะไม่ได้ใช้มาก
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// ไม่ได้ใช้งาน
+	}
+	
+	// เมธอด keyPressed จะถูกเรียกทุกครั้งที่มีการ "กดปุ่มลง"
+	@Override
+	public void keyPressed(KeyEvent e) {
+		int code = e.getKeyCode(); // ดึงโค้ดของปุ่มที่ถูกกดมา (เช่น VK_W, VK_S)
+		
+		// เช็คว่าปุ่มที่กดคือปุ่มไหน แล้วตั้งค่า boolean ให้เป็น true
+		if (code == KeyEvent.VK_W){  // ถ้ากดปุ่ม W
+		upPressed = true; // ตั้ง upPressed เป็น true (กำลังกดขึ้น)
+	}
+	if (code == KeyEvent.VK_S){    // ถ้ากดปุ่ม S
+		downPressed = true;  // ตั้ง downPressed เป็น true (กำลังกดลง)
+	}	
+	if (code == KeyEvent.VK_A){   // ถ้ากดปุ่ม A
+		leftPressed = true;  // ตั้ง leftPressed เป็น true (กำลังกดซ้าย)
+	}		
+	if (code == KeyEvent.VK_D){   // ถ้ากดปุ่ม D
+			rightPressed = true;  // ตั้ง rightPressed เป็น true (กำลังกดขวา)
+		}	
+	}
+	
+	// เมธอด keyReleased จะถูกเรียกทุกครั้งที่มีการ "ปล่อยปุ่ม"
+	@Override
+	public void keyReleased(KeyEvent e) {
+		int code = e.getKeyCode(); // ดึงโค้ดของปุ่มที่ถูกปล่อยมา
+		
+		// เช็คว่าปุ่มที่ปล่อยคือปุ่มไหน แล้วตั้งค่า boolean ให้เป็น false
+		if (code == KeyEvent.VK_W){  // ถ้าปล่อย W
+		upPressed = false; // ตั้ง upPressed เป็น false (ไม่ได้กดขึ้นแล้ว)
+	}
+	if (code == KeyEvent.VK_S){    // ถ้าปล่อย S
+		downPressed = false; // ตั้ง downPressed เป็น false (ไม่ได้กดลงแล้ว)
+	}	
+	if (code == KeyEvent.VK_A){   // ถ้าปล่อย A
+		leftPressed = false; // ตั้ง leftPressed เป็น false (ไม่ได้กดซ้ายแล้ว)
+	}		
+	if (code == KeyEvent.VK_D){   // ถ้าปล่อย D
+			rightPressed = false; // ตั้ง rightPressed เป็น false (ไม่ได้กดขวาแล้ว)
+		}
+	}
+}

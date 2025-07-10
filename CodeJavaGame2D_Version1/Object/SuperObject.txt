@@ -1,0 +1,41 @@
+// อยู่ในแพ็กเกจ Object นะ คลาสนี้คือตัวแม่ของ Object ทุกอย่าง
+package Object;
+
+// ดึงคลาสที่จำเป็นสำหรับการวาดและพื้นที่ชน
+import java.awt.Graphics2D; // สำหรับวาดรูป
+import java.awt.Rectangle; // กล่องสี่เหลี่ยม
+import java.awt.image.BufferedImage; // เก็บรูป
+
+import JavaLearn.GamePanel; // ดึง GamePanel มาใช้เพื่อเข้าถึงข้อมูลเกมและผู้เล่น
+
+// คลาส SuperObject นี่คือคลาสแม่สำหรับ Object ทุกชนิดในเกม
+public class SuperObject {
+
+		public BufferedImage image; // รูปภาพของ Object นั้นๆ
+		public String name; // ชื่อของ Object (เช่น "Key", "Door")
+		public boolean collision = false; // บอกว่า Object นี้ชนได้หรือไม่ (true = ชนได้, false = เดินผ่านได้)
+		public int worldX, worldY; // ตำแหน่ง X, Y ของ Object ในโลกของเกม
+		public Rectangle solidArea = new Rectangle(0, 0, 48, 48); // พื้นที่ชนของ Object (ขนาด 48x48 เป็นค่าเริ่มต้น)
+		public int solidAreaDefaultX = 0; // ตำแหน่ง X เริ่มต้นของ solidArea
+		public int solidAreaDefaultY = 0; // ตำแหน่ง Y เริ่มต้นของ solidArea
+		
+		// เมธอด draw() สำหรับวาด Object บนหน้าจอเกม
+		public void draw(Graphics2D g2, GamePanel gp) {
+		
+	        // คำนวณตำแหน่งของ Object นี้บนหน้าจอ (เพื่อให้กล้องมันตามผู้เล่นไป)
+	        // สูตรนี้คือมาตรฐานเลยสำหรับการทำกล้องตามผู้เล่นในเกม 2D
+	        int screenX = worldX - gp.player.worldX + gp.player.screenX;
+	        int screenY = worldY - gp.player.worldY + gp.player.screenY;
+	        
+	        // --- การเพิ่มประสิทธิภาพ (Optimization) ---
+	        // เราจะวาด Object ก็ต่อเมื่อ Object นั้นๆ อยู่ในบริเวณที่เรามองเห็นบนหน้าจอเท่านั้นนะ
+	        // และเผื่อขอบออกไปอีก 1 Tile ด้วย เผื่อเวลาผู้เล่นขยับจะได้ไม่เห็นขอบดำๆ
+	        if(worldX + gp.tileSize > gp.player.worldX - gp.player.screenX && // เช็คขอบซ้าย
+	           worldX - gp.tileSize < gp.player.worldX + gp.player.screenX && // เช็คขอบขวา
+	           worldY + gp.tileSize > gp.player.worldY - gp.player.screenY && // เช็คขอบบน
+	           worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) { // เช็คขอบล่าง
+	            
+	            g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null); // วาดรูปภาพ Object
+	        }
+		}
+}

@@ -1,0 +1,27 @@
+// อยู่ในแพ็กเกจ JavaLearn นะ นี่คือตัวเริ่มโปรแกรม
+package JavaLearn;
+
+// ดึงคลาส JFrame มาใช้เพื่อสร้างหน้าต่างของเกม
+import javax.swing.JFrame;
+
+// คลาส Main นี่แหละคือจุดเริ่มต้นของทุกอย่างในโปรแกรมของเรา
+public class Main {
+	public static void main(String[] args) {
+		
+		JFrame window = new JFrame(); // สร้างหน้าต่างเกมขึ้นมา
+		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  // ตั้งค่าว่าถ้ากดปุ่มกากบาท (X) บนหน้าต่าง ให้โปรแกรมปิดไปเลย
+		window.setResizable(false);  // ไม่ให้ปรับขนาดหน้าต่างได้
+		window.setTitle("2D Adventure");  // ตั้งชื่อบนแถบหัวข้อของหน้าต่าง
+		
+		GamePanel gamePanel = new GamePanel(); // สร้าง GamePanel ของเราขึ้นมา
+		window.add(gamePanel); // เอา GamePanel ไปใส่ในหน้าต่าง
+		
+		window.pack(); // ปรับขนาดหน้าต่างให้พอดีกับขนาดที่ GamePanel ต้องการ
+		
+		window.setLocationRelativeTo(null);  // จัดตำแหน่งหน้าต่างให้อยู่ตรงกลางจอ (ถ้าเป็น null)
+		window.setVisible(true); // ทำให้หน้าต่างเกมมองเห็นได้
+		
+		gamePanel.setupGame(); // เรียกเมธอด setupGame เพื่อตั้งค่าเกมเบื้องต้น
+		gamePanel.startGameThread(); // เริ่มต้น Game Thread เพื่อให้เกมเริ่มทำงาน
+	}
+}

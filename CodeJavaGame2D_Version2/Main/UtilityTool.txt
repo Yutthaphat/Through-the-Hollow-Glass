@@ -1,0 +1,18 @@
+package JavaLearn; // บอกว่าคลาสนี้อยู่ในแพ็กเกจชื่อ JavaLearn
+
+import java.awt.Graphics2D; // import Graphics2D สำหรับการวาดภาพ
+import java.awt.image.BufferedImage; // import BufferedImage สำหรับจัดการรูปภาพ
+
+public class UtilityTool { // คลาส UtilityTool สำหรับฟังก์ชันช่วยต่างๆ (เช่น การปรับขนาดรูปภาพ)
+	
+	public BufferedImage scaleImage(BufferedImage original, int width, int height) { // เมธอดสำหรับปรับขนาดรูปภาพ
+		
+		// สร้าง BufferedImage ใหม่ที่มีขนาดตามที่ต้องการ
+		BufferedImage scaledImage = new BufferedImage(width, height, original.getType());
+		Graphics2D g2 = scaledImage.createGraphics(); // สร้าง Graphics2D สำหรับวาดลงบน scaledImage
+		g2.drawImage(original, 0, 0, width, height, null); // วาดรูปภาพต้นฉบับลงบน scaledImage พร้อมปรับขนาด
+		g2.dispose(); // ปล่อยทรัพยากร Graphics2D
+		
+		return scaledImage; // ส่งคืนรูปภาพที่ถูกปรับขนาดแล้ว
+	}
+}

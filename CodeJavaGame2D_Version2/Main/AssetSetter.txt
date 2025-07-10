@@ -1,0 +1,53 @@
+package JavaLearn; // บอกว่าคลาสนี้อยู่ในแพ็กเกจชื่อ JavaLearn
+
+import Object.OBJ_Boots; // import คลาส OBJ_Boots
+import Object.OBJ_Chest; // import คลาส OBJ_Chest
+import Object.OBJ_Door; // import คลาส OBJ_Door
+import Object.OBJ_Key; // import คลาส OBJ_Key
+
+public class AssetSetter { // คลาสสำหรับกำหนดตำแหน่งและสร้าง Object ต่างๆ ในเกม
+	
+	GamePanel gp; // ตัวแปรอ้างอิงถึง GamePanel เพื่อเข้าถึงข้อมูลเกม
+	
+	public AssetSetter(GamePanel gp) { // Constructor ของ AssetSetter
+		this.gp = gp; // กำหนด GamePanel ที่รับมาให้กับตัวแปร gp ของคลาสนี้
+	}
+	
+	public void setObject() { // เมธอดสำหรับตั้งค่า Object ต่างๆ ในแผนที่
+		// สร้าง Object Key และกำหนดตำแหน่งในโลกของเกม
+		gp.obj[0] = new OBJ_Key(gp); // สร้างกุญแจตัวที่ 0 (ส่ง gp ไปด้วย)
+		gp.obj[0].worldX = 23 * gp.tileSize; // กำหนดตำแหน่ง X
+		gp.obj[0].worldY = 7 * gp.tileSize; // กำหนดตำแหน่ง Y
+		
+		gp.obj[1] = new OBJ_Key(gp); // สร้างกุญแจตัวที่ 1
+		gp.obj[1].worldX = 23 * gp.tileSize; 
+		gp.obj[1].worldY = 40 * gp.tileSize;
+		
+		gp.obj[2] = new OBJ_Key(gp); // สร้างกุญแจตัวที่ 2
+		gp.obj[2].worldX = 37 * gp.tileSize;
+		gp.obj[2].worldY = 7 * gp.tileSize;
+		
+		// สร้าง Object Door และกำหนดตำแหน่ง
+		gp.obj[3] = new OBJ_Door(gp); // สร้างประตูตัวที่ 3
+		gp.obj[3].worldX = 10 * gp.tileSize;
+		gp.obj[3].worldY = 11 * gp.tileSize;
+		
+		gp.obj[4] = new OBJ_Door(gp); // สร้างประตูตัวที่ 4
+		gp.obj[4].worldX = 8 * gp.tileSize;
+		gp.obj[4].worldY = 28 * gp.tileSize;
+		
+		gp.obj[5] = new OBJ_Door(gp); // สร้างประตูตัวที่ 5
+		gp.obj[5].worldX = 12 * gp.tileSize;
+		gp.obj[5].worldY = 22 * gp.tileSize;
+		
+		// สร้าง Object Chest และกำหนดตำแหน่ง
+		gp.obj[6] = new OBJ_Chest(gp); // สร้างหีบตัวที่ 6
+		gp.obj[6].worldX = 10 * gp.tileSize;
+		gp.obj[6].worldY = 7 * gp.tileSize;
+		
+		// สร้าง Object Boots และกำหนดตำแหน่ง
+		gp.obj[7] = new OBJ_Boots(gp); // สร้างรองเท้าตัวที่ 7
+		gp.obj[7].worldX = 37 * gp.tileSize;
+		gp.obj[7].worldY = 42 * gp.tileSize;
+	}
+}

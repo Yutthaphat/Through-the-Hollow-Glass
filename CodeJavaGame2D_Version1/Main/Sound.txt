@@ -1,0 +1,58 @@
+// อยู่ในแพ็กเกจ JavaLearn นะ คลาสนี้ไว้เล่นเสียง
+package JavaLearn;
+
+// ดึงคลาสที่จำเป็นสำหรับจัดการไฟล์เสียง
+import java.net.URL; // ไว้บอกตำแหน่งของไฟล์เสียง
+
+import javax.sound.sampled.AudioInputStream; // ใช้สำหรับอ่านข้อมูลเสียง
+import javax.sound.sampled.AudioSystem; // ระบบเสียงของ Java
+import javax.sound.sampled.Clip; // ใช้สำหรับเล่นไฟล์เสียงแบบสั้นๆ หรือวนซ้ำได้
+
+// คลาส Sound นี่แหละคือคนจัดการเรื่องเสียงในเกมเรา
+public class Sound {
+
+	Clip clip; // ตัวแปรนี้คือ Object ที่ใช้เล่นเสียงจริงๆ
+	URL soundURL[] = new URL[30]; // อาเรย์นี้เก็บตำแหน่งของไฟล์เสียงต่างๆ (รองรับ 30 เสียง)
+	
+	// Constructor ของคลาส Sound
+	public Sound() {
+		
+		// กำหนดตำแหน่งไฟล์เสียงแต่ละไฟล์
+		soundURL[0] = getClass().getResource("/sound/BlueBoyAdventure.wav"); // เพลงพื้นหลัง
+		soundURL[1] = getClass().getResource("/sound/coin.wav"); // เสียงเก็บเหรียญ/กุญแจ
+		soundURL[2] = getClass().getResource("/sound/powerup.wav"); // เสียงเก็บ power-up (เช่นรองเท้า)
+		soundURL[3] = getClass().getResource("/sound/unlock.wav"); // เสียงปลดล็อก (เช่นประตู)
+		soundURL[4] = getClass().getResource("/sound/fanfare.wav"); // เสียงจบเกม (เหมือนเสียงฉลอง)
+	}
+	
+	// เมธอด setFile สำหรับเตรียมไฟล์เสียงที่จะเล่น
+	public void setFile(int i) {
+		
+		try {			
+			AudioInputStream ais = AudioSystem.getAudioInputStream(soundURL[i]); // แปลง URL เป็น AudioInputStream
+			clip = AudioSystem.getClip(); // เอา Clip Object มาใช้
+			clip.open(ais); // เปิดไฟล์เสียงด้วย Clip
+			
+		}catch(Exception e) {	
+			// ตรงนี้ถ้ามีปัญหาตอนโหลดเสียง จะไม่มีการแสดง error ออกมานะ (ปกติควรใส่ e.printStackTrace() ด้วย)
+		}
+	}
+
+	// เมธอด play สำหรับเริ่มเล่นเสียง
+	public void play() {
+		
+		clip.start(); // เริ่มเล่นเสียงเลย
+	}
+
+	// เมธอด loop สำหรับเล่นเสียงซ้ำไปเรื่อยๆ
+	public void loop() {
+		
+		clip.loop(Clip.LOOP_CONTINUOUSLY); // สั่งให้เล่นซ้ำไม่หยุด
+	}
+
+	// เมธอด stop สำหรับหยุดเล่นเสียง
+	public void stop() {
+		
+		clip.stop(); // สั่งหยุดเสียง
+	}
+}

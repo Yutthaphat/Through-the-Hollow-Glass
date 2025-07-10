@@ -1,0 +1,141 @@
+// อยู่ในแพ็กเกจ Tile นะ คลาสนี้คือคนจัดการ Tile ทั้งหมด
+package Tile;
+
+// ดึงคลาสที่จำเป็นสำหรับการวาดและอ่านไฟล์
+import java.awt.Graphics2D; // สำหรับวาดรูป
+import java.io.BufferedReader; // สำหรับอ่านข้อความจากไฟล์ทีละบรรทัด
+import java.io.IOException; // ไว้จัดการ error ตอนอ่านไฟล์
+import java.io.InputStream; // สำหรับอ่านข้อมูลจาก Stream
+import java.io.InputStreamReader; // สำหรับแปลง InputStream เป็น Reader
+
+import javax.imageio.ImageIO; // สำหรับอ่านไฟล์รูปภาพ
+
+import JavaLearn.GamePanel; // ดึง GamePanel มาใช้เพื่อเข้าถึงข้อมูลเกม
+
+// คลาส TileManager นี่แหละคือหัวหน้าใหญ่ที่ดูแลเรื่อง Tile ทั้งหมดในเกม
+// ตั้งแต่โหลดรูปภาพ ไปจนถึงสร้างแผนที่
+public class TileManager {
+	
+	GamePanel gp; // อ้างอิงถึง GamePanel เพื่อเข้าถึงข้อมูลเกมต่างๆ
+	public Tile[] tile; // อาเรย์สำหรับเก็บประเภทของ Tile (เช่น Tile[0] คือหญ้า, Tile[1] คือกำแพง)
+	public int mapTileNum[][]; // อาเรย์ 2 มิติสำหรับเก็บข้อมูลแผนที่ (แต่ละช่องเก็บหมายเลขประเภทของ Tile)
+	
+	// Constructor ของ TileManager
+	public TileManager(GamePanel gp) {
+		
+		this.gp = gp; // กำหนด GamePanel
+		
+		tile = new Tile[10]; // สร้างอาเรย์สำหรับเก็บ Tile ได้ 10 ประเภท
+		mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow]; // สร้างอาเรย์ 2 มิติสำหรับแผนที่ตามขนาด World Map ที่เราตั้งไว้
+		
+		getTileImage(); // เรียกเมธอดไปโหลดรูปภาพ Tile ทั้งหมด
+		loadMap("/maps/world01.txt"); // เรียกเมธอดไปโหลดข้อมูลแผนที่จากไฟล์ชื่อ world01.txt
+	}
+	
+	// เมธอด getTileImage สำหรับโหลดรูปภาพของ Tile แต่ละประเภท
+	public void getTileImage() {
+		
+		try {
+			// โหลดรูปภาพ Tile แต่ละประเภทแล้วก็บอกด้วยว่าอันไหนชนได้บ้าง
+			tile[0] = new Tile();
+			tile[0].image = ImageIO.read(getClass().getResourceAsStream("/tiles/grass.png")); // หญ้า (เดินผ่านได้)
+			
+			tile[1] = new Tile();
+			tile[1].image = ImageIO.read(getClass().getResourceAsStream("/tiles/wall.png")); // กำแพง
+			tile[1].collision = true; // กำแพงชนได้นะ!
+
+			tile[2] = new Tile();
+			tile[2].image = ImageIO.read(getClass().getResourceAsStream("/tiles/water.png")); // น้ำ
+			tile[2].collision = true; // น้ำก็ชนได้ เดินลุยไม่ได้!
+			
+			tile[3] = new Tile();
+			tile[3].image = ImageIO.read(getClass().getResourceAsStream("/tiles/earth.png")); // พื้นดิน (เดินผ่านได้)
+			
+			tile[4] = new Tile();
+			tile[4].image = ImageIO.read(getClass().getResourceAsStream("/tiles/tree.png")); // ต้นไม้
+			tile[4].collision = true; // ต้นไม้ก็ชนได้!
+			
+			tile[5] = new Tile();
+			tile[5].image = ImageIO.read(getClass().getResourceAsStream("/tiles/sand.png")); // ทราย (เดินผ่านได้)
+			
+		}catch(IOException e) {
+			e.printStackTrace(); // ถ้าโหลดรูปไม่ได้ก็ปริ้นท์ error ออกมา
+		}
+	}
+
+	// เมธอด loadMap สำหรับโหลดข้อมูลแผนที่จากไฟล์ข้อความ
+	public void loadMap(String filePath) {
+		
+		try {
+			InputStream is = getClass().getResourceAsStream(filePath); // เปิด Stream เพื่ออ่านไฟล์แผนที่
+			BufferedReader br = new BufferedReader(new InputStreamReader(is)); // สร้างตัวอ่านข้อความแบบบัฟเฟอร์ (อ่านได้ทีละบรรทัด)
+			
+			int col = 0; // ตัวนับคอลัมน์
+			int row = 0; // ตัวนับแถว
+
+			// วนลูปอ่านข้อมูลแผนที่จากไฟล์จนกว่าจะอ่านครบทั้ง World Map
+			while(col < gp.maxWorldCol && row < gp.maxWorldRow) { 
+				
+				String line = br.readLine(); // อ่านข้อความมาหนึ่งบรรทัด
+				
+				// วนลูปนี้จะอ่านตัวเลขในแต่ละบรรทัดแล้วเก็บลงใน mapTileNum
+				while(col < gp.maxWorldCol) { 
+					
+					String numbers[] = line.split(" "); // แยกตัวเลขในบรรทัดด้วยช่องว่าง
+					
+					int num = Integer.parseInt(numbers[col]); // แปลงตัวเลขจากข้อความเป็นตัวเลข int
+					
+					mapTileNum[col][row] = num; // เอาหมายเลข Tile ไปเก็บในอาเรย์แผนที่
+					col++; // เลื่อนไปคอลัมน์ถัดไป
+				}
+				// ถ้าอ่านครบทุกคอลัมน์ในแถวนั้นแล้ว
+				if(col == gp.maxWorldCol) {
+					col = 0; // รีเซ็ตคอลัมน์กลับไปเป็น 0
+					row++; // เลื่อนไปแถวถัดไป
+				}
+			}
+			br.close(); // ปิดตัวอ่านไฟล์
+			
+		}catch(Exception e) {
+			 // e.printStackTrace(); // อันนี้ปกติจะเปิดไว้ตอน debug นะ
+		}
+	}
+	
+	// เมธอด draw() สำหรับวาด Tile Map บนหน้าจอ
+	public void draw(Graphics2D g2) {
+	    int worldCol = 0; // ตัวนับคอลัมน์ใน World Map
+	    int worldRow = 0; // ตัวนับแถวใน World Map
+	    
+	    // วนลูปวาด Tile ทุกแผ่นใน World Map ทั้งหมด (ตาม maxWorldCol, maxWorldRow)
+	    while(worldCol < gp.maxWorldCol && worldRow < gp.maxWorldRow) { 
+	        
+	        int tileNum = mapTileNum[worldCol][worldRow]; // ดึงหมายเลขประเภทของ Tile จากข้อมูลแผนที่
+	        
+	        int worldX = worldCol * gp.tileSize; // คำนวณตำแหน่ง X ของ Tile ใน World Map (เป็นพิกเซล)
+	        int worldY = worldRow * gp.tileSize; // คำนวณตำแหน่ง Y ของ Tile ใน World Map (เป็นพิกเซล)
+
+	        // คำนวณตำแหน่งของ Tile นี้บนหน้าจอ (อันนี้สำคัญมาก! เพื่อให้กล้องมันตามผู้เล่นไป)
+	        int screenX = worldX - gp.player.worldX + gp.player.screenX;
+	        int screenY = worldY - gp.player.worldY + gp.player.screenY;
+	        
+	        // --- การเพิ่มประสิทธิภาพ (Optimization) ---
+	        // เราจะวาด Tile ก็ต่อเมื่อ Tile นั้นๆ อยู่ในบริเวณที่เรามองเห็นบนหน้าจอเท่านั้นนะ
+	        // โดยเผื่อขอบออกไปอีก 1 Tile ด้วย เผื่อเวลาผู้เล่นขยับจะได้ไม่เห็นขอบดำๆ แวบๆ
+	        if(worldX + gp.tileSize > gp.player.worldX - gp.player.screenX && // เช็คขอบซ้าย
+	           worldX - gp.tileSize < gp.player.worldX + gp.player.screenX && // เช็คขอบขวา
+	           worldY + gp.tileSize > gp.player.worldY - gp.player.screenY && // เช็คขอบบน
+	           worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) { // เช็คขอบล่าง
+	            
+	            g2.drawImage(tile[tileNum].image, screenX, screenY, gp.tileSize, gp.tileSize, null); // วาดรูปภาพ Tile
+	        }
+
+	        worldCol++; // เลื่อนไปคอลัมน์ถัดไป
+	        
+	        // ถ้าถึงคอลัมน์สุดท้ายของ World Map แล้ว
+	        if(worldCol == gp.maxWorldCol) {
+	            worldCol = 0; // รีเซ็ตคอลัมน์กลับไปเป็น 0
+	            worldRow++; // เลื่อนไปแถวถัดไป
+	        }
+	    }
+	}
+}

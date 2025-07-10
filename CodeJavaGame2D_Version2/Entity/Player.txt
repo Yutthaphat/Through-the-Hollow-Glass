@@ -1,0 +1,231 @@
+package Entity; // บอกว่าคลาสนี้อยู่ในแพ็กเกจชื่อ Entity
+
+import java.awt.Graphics2D; // import คลาส Graphics2D สำหรับการวาดภาพ 2 มิติ
+import java.awt.Rectangle; // import คลาส Rectangle สำหรับสร้างพื้นที่สี่เหลี่ยม
+import java.awt.image.BufferedImage; // import คลาส BufferedImage สำหรับจัดการรูปภาพ
+import java.io.IOException; // import IOException สำหรับจัดการข้อผิดพลาดเกี่ยวกับการอ่าน/เขียนไฟล์
+
+import javax.imageio.ImageIO; // import ImageIO สำหรับอ่านไฟล์รูปภาพ
+
+import JavaLearn.GamePanel; // import คลาส GamePanel เพื่อเข้าถึงข้อมูลของเกม
+import JavaLearn.KeyHandler; // import คลาส KeyHandler เพื่อรับข้อมูลการกดปุ่ม
+import JavaLearn.UtilityTool; // import คลาส UtilityTool สำหรับจัดการรูปภาพ
+
+public class Player extends Entity{ // คลาส Player สืบทอดมาจากคลาส Entity (เป็น Entity ชนิดหนึ่ง)
+
+	GamePanel gp; // ตัวแปรอ้างอิงถึง GamePanel เพื่อเข้าถึงข้อมูลเกม
+	KeyHandler keyH; // ตัวแปรอ้างอิงถึง KeyHandler เพื่อตรวจสอบการกดปุ่ม
+	
+	public final int screenX; // ตำแหน่ง X ของผู้เล่นบนหน้าจอ (fix ไว้ตรงกลาง)
+	public final int screenY; // ตำแหน่ง Y ของผู้เล่นบนหน้าจอ (fix ไว้ตรงกลาง)
+	public int hasKey = 0; // จำนวนกุญแจที่ผู้เล่นมี
+	
+	public Player(GamePanel gp, KeyHandler keyH) { // Constructor ของ Player
+		
+		this.gp = gp; // กำหนด GamePanel ที่รับมาให้กับตัวแปร gp ของคลาสนี้
+		this.keyH = keyH; // กำหนด KeyHandler ที่รับมาให้กับตัวแปร keyH ของคลาสนี้
+		
+		// คำนวณตำแหน่ง X และ Y ของผู้เล่นบนหน้าจอให้เป็นกึ่งกลางเสมอ
+		screenX = gp.screenWidth/2 - (gp.tileSize/2); 
+		screenY = gp.screenHeight/2 - (gp.tileSize/2);
+		
+		solidArea = new Rectangle(); // สร้าง Object Rectangle สำหรับ hitbox ของผู้เล่น
+		solidArea.x = 0; // กำหนดตำแหน่ง X เริ่มต้นของ hitbox (สัมพันธ์กับตัวผู้เล่น)
+		solidArea.y = 16; // กำหนดตำแหน่ง Y เริ่มต้นของ hitbox (สัมพันธ์กับตัวผู้เล่น)
+		solidAreaDefaultX = solidArea.x; // เก็บค่า X เริ่มต้นของ hitbox ไว้สำหรับรีเซ็ต
+		solidAreaDefaultY = solidArea.y; // เก็บค่า Y เริ่มต้นของ hitbox ไว้สำหรับรีเซ็ต
+		solidArea.width = 32; // กำหนดความกว้างของ hitbox
+		solidArea.height = 32; // กำหนดความสูงของ hitbox
+		
+		setDefaultValues(); // เรียกเมธอดกำหนดค่าเริ่มต้นของผู้เล่น
+		getPlayerImage(); // เรียกเมธอดโหลดรูปภาพผู้เล่น
+	}
+
+	public void setDefaultValues() { // เมธอดสำหรับกำหนดค่าเริ่มต้นของผู้เล่น
+		
+		worldX = gp.tileSize * 23; // กำหนดตำแหน่ง X เริ่มต้นของผู้เล่นในโลกของเกม
+		worldY = gp.tileSize * 21; // กำหนดตำแหน่ง Y เริ่มต้นของผู้เล่นในโลกของเกม
+		speed = 4; // กำหนดความเร็วเริ่มต้นของผู้เล่น
+		direction = "down"; // กำหนดทิศทางเริ่มต้นของผู้เล่นให้หันลง
+	}
+
+	public void getPlayerImage() { // เมธอดสำหรับโหลดรูปภาพผู้เล่น
+		// เรียกเมธอด setup เพื่อโหลดและปรับขนาดรูปภาพสำหรับทุกทิศทาง
+		up1 = setup("boy_up_1"); // โหลดรูป "boy_up_1.png" สำหรับเดินขึ้นรูปที่ 1
+		up2 = setup("boy_up_2"); // โหลดรูป "boy_up_2.png" สำหรับเดินขึ้นรูปที่ 2
+		down1 = setup("boy_down_1"); // โหลดรูป "boy_down_1.png" สำหรับเดินลงรูปที่ 1
+		down2 = setup("boy_down_2"); // โหลดรูป "boy_down_2.png" สำหรับเดินลงรูปที่ 2
+		left1 = setup("boy_left_1"); // โหลดรูป "boy_left_1.png" สำหรับเดินซ้ายรูปที่ 1
+		left2 = setup("boy_left_2"); // โหลดรูป "boy_left_2.png" สำหรับเดินซ้ายรูปที่ 2
+		right1 = setup("boy_right_1"); // โหลดรูป "boy_right_1.png" สำหรับเดินขวารูปที่ 1
+		right2 = setup("boy_right_2"); // โหลดรูป "boy_right_2.png" สำหรับเดินขวารูปที่ 2
+	}
+	
+	public BufferedImage setup(String imageName) { // เมธอดช่วยโหลดและปรับขนาดรูปภาพ
+		
+		UtilityTool uTool = new UtilityTool(); // สร้าง Object ของ UtilityTool
+		BufferedImage image = null; // ตัวแปรเก็บรูปภาพที่โหลดมา
+		
+		try {
+			// อ่านรูปภาพจาก Resource (โฟลเดอร์ /player/) ตามชื่อที่กำหนด
+			image = ImageIO.read(getClass().getResourceAsStream("/player/" + imageName + ".png"));
+			// ปรับขนาดรูปภาพให้เท่ากับ tileSize ของเกม
+			image = uTool.scaleImage(image, gp.tileSize, gp.tileSize);
+			
+		}catch(IOException e) { // ดักจับข้อผิดพลาดหากอ่านไฟล์รูปภาพไม่ได้
+			e.printStackTrace(); // พิมพ์ข้อผิดพลาดใน Console
+		}
+		return image; // ส่งรูปภาพที่โหลดและปรับขนาดแล้วกลับไป
+	}
+	
+	public void update() { // เมธอดสำหรับอัปเดตสถานะของผู้เล่นทุกเฟรม
+		
+		// ตรวจสอบว่ามีการกดปุ่มทิศทางใดๆ หรือไม่
+		if(keyH.upPressed == true || keyH.downPressed == true || keyH.leftPressed == true || keyH.rightPressed == true) {
+			
+			// ตรวจสอบว่าปุ่มไหนถูกกดและกำหนดทิศทางของผู้เล่น
+			if(keyH.upPressed == true){  // ถ้ากดขึ้น
+				direction = "up";    // กำหนดทิศทางเป็นขึ้น
+			} 
+			else if(keyH.downPressed == true){   // ถ้ากดลง
+				direction = "down";   // กำหนดทิศทางเป็นลง
+			} 
+			else if(keyH.leftPressed == true){   // ถ้ากดซ้าย
+				direction = "left";   // กำหนดทิศทางเป็นซ้าย
+			} 
+			else if(keyH.rightPressed == true){   // ถ้ากดขวา
+				direction = "right";     // กำหนดทิศทางเป็นขวา
+			}
+			
+			// ตรวจสอบการชนกับ Tile (ผนัง, น้ำ, ต้นไม้)
+			collisionOn = false; // ตั้งค่าการชนเป็น false ก่อนตรวจสอบทุกครั้ง
+			gp.cChecker.checkTile(this); // เรียก CollisionChecker เพื่อตรวจสอบการชนกับ Tile ของผู้เล่น
+			
+			// ตรวจสอบการชนกับ Object (กุญแจ, ประตู, รองเท้า, หีบ)
+			int objIndex = gp.cChecker.checkObject(this, true); // เรียก CollisionChecker เพื่อตรวจสอบการชนกับ Object ของผู้เล่น (true คือผู้เล่น)
+			pickUpObject(objIndex); // เรียกเมธอดจัดการเมื่อชนกับ Object
+			
+			// ถ้าไม่มีการชนกับ Tile หรือ Object ที่มี collision=true ผู้เล่นจะเคลื่อนที่ได้
+			if(collisionOn == false) { 
+				
+				switch(direction) { // เคลื่อนที่ตามทิศทางที่กำหนด
+				case"up": // ถ้าทิศทางขึ้น
+					worldY -= speed; // ลดค่า Y (เคลื่อนที่ขึ้น)
+					break;
+				case"down": // ถ้าทิศทางลง
+					worldY += speed;  // เพิ่มค่า Y (เคลื่อนที่ลง)
+					break;
+				case"left": // ถ้าทิศทางซ้าย
+					worldX -= speed;  // ลดค่า X (เคลื่อนที่ซ้าย)
+					break;
+				case"right": // ถ้าทิศทางขวา
+					worldX += speed; // เพิ่มค่า X (เคลื่อนที่ขวา)
+					break;
+				}
+			}
+			
+			spriteCounter++; // เพิ่มค่าตัวนับอนิเมชัน
+			if(spriteCounter > 12) { // ถ้าตัวนับเกิน 12 เฟรม (ประมาณ 0.2 วินาที ที่ 60 FPS)
+				if(spriteNum == 1) { // ถ้าตอนนี้ใช้รูปที่ 1
+					spriteNum = 2; // เปลี่ยนไปใช้รูปที่ 2
+				}
+				else if(spriteNum == 2) { // ถ้าตอนนี้ใช้รูปที่ 2
+					spriteNum = 1; // เปลี่ยนไปใช้รูปที่ 1
+				}
+				spriteCounter = 0; // รีเซ็ตตัวนับอนิเมชัน
+			}
+		}
+		/*
+		else { // โค้ดส่วนนี้ถูกคอมเมนต์ไว้ ไม่ได้ใช้งานในเวอร์ชันนี้
+			counter2++;
+			if(counter2 == 20) {
+				spriteNum = 1;
+				counter2 = 0;
+			}
+		}*/
+	}
+
+	public void pickUpObject(int i) { // เมธอดสำหรับจัดการเมื่อผู้เล่นชนกับ Object
+		
+		if(i != 999) { // ถ้า index ที่ชนไม่ใช่ 999 (ซึ่งหมายถึงชนกับ Object จริงๆ)
+			
+			String objectName = gp.obj[i].name; // เอาชื่อของ Object ที่ชนมา
+			
+			switch(objectName) { // ตรวจสอบว่าชนกับ Object ชนิดไหน
+			case "Key": // ถ้าชนกุญแจ
+				gp.playSE(1); // เล่นเสียงเก็บกุญแจ
+				hasKey++; // เพิ่มจำนวนกุญแจ
+				gp.obj[i] = null; // ลบกุญแจออกจากโลก (หายไป)
+				gp.ui.showMessage("You got a key!"); // แสดงข้อความ "You got a key!"
+				break;
+			case "Door": // ถ้าชนประตู
+				if(hasKey > 0) { // ถ้ามีกุญแจ
+					gp.playSE(3); // เล่นเสียงเปิดประตู
+					gp.obj[i] = null; // ลบประตูออกจากโลก (เปิดออก)
+					hasKey--; // ลดจำนวนกุญแจ
+					gp.ui.showMessage("You opened the door!"); // แสดงข้อความ "You opened the door!"
+				}
+				else { // ถ้าไม่มีกุญแจ
+					gp.ui.showMessage("You need a key!"); // แสดงข้อความ "You need a key!"
+				}
+				break;
+			case "Boots": // ถ้าชนรองเท้า
+				gp.playSE(2); // เล่นเสียงเก็บรองเท้า
+				speed += 1; // เพิ่มความเร็วผู้เล่น 1 หน่วย
+				gp.obj[i] = null; // ลบรองเท้าออกจากโลก
+				gp.ui.showMessage("Speed up!"); // แสดงข้อความ "Speed up!"
+				break;
+			case "Chest": // ถ้าชนหีบสมบัติ
+				gp.ui.gameFinished = true; // ตั้งค่าสถานะเกมเป็นจบเกม
+				gp.stopMusic(); // หยุดเพลงพื้นหลัง
+				gp.playSE(4); // เล่นเสียงจบเกม (fanfare)
+				break;
+			}
+		}
+	}
+	
+	public void draw(Graphics2D g2) { // เมธอดสำหรับวาดผู้เล่นบนหน้าจอ
+		//g2.setColor(Color.WHITE);  // กำหนดสีขาว (คอมเมนต์ไว้ ไม่ได้ใช้)
+		// g2.fillRect(x, y, width, height);  // วาดสี่เหลี่ยมแล้วเติมสีที่กำหนดลงไป (คอมเมนต์ไว้ ไม่ได้ใช้)
+		//g2.fillRect(x, y, gp.tileSize, gp.tileSize); // (คอมเมนต์ไว้ ไม่ได้ใช้)
+		
+		BufferedImage image = null; // ตัวแปรสำหรับเก็บรูปภาพที่จะนำมาวาด
+		
+		switch(direction) { // ตรวจสอบทิศทางของผู้เล่นเพื่อเลือกรูปภาพที่เหมาะสม
+		case "up": // ถ้าทิศทางขึ้น
+			if(spriteNum == 1) { // ถ้าเป็นรูปอนิเมชันที่ 1
+				image = up1; // ใช้รูปขึ้นรูปที่ 1
+			}
+			if(spriteNum == 2) { // ถ้าเป็นรูปอนิเมชันที่ 2
+				image = up2; // ใช้รูปขึ้นรูปที่ 2
+			}
+			break;
+		case "down": // ถ้าทิศทางลง
+			if(spriteNum == 1) { // ถ้าเป็นรูปอนิเมชันที่ 1
+				image = down1; // ใช้รูปลงรูปที่ 1
+			}
+			if(spriteNum == 2) { // ถ้าเป็นรูปอนิเมชันที่ 2
+				image = down2; // ใช้รูปลงรูปที่ 2
+			}
+			break;
+		case "left": // ถ้าทิศทางซ้าย
+			if(spriteNum == 1) { // ถ้าเป็นรูปอนิเมชันที่ 1
+				image = left1; // ใช้รูปซ้ายรูปที่ 1
+			}
+			if(spriteNum == 2) { // ถ้าเป็นรูปอนิเมชันที่ 2
+				image = left2; // ใช้รูปซ้ายรูปที่ 2
+			}
+			break;
+		case "right": // ถ้าทิศทางขวา
+			if(spriteNum == 1) { // ถ้าเป็นรูปอนิเมชันที่ 1
+				image = right1; // ใช้รูปขวารูปที่ 1
+			}
+			if(spriteNum == 2) { // ถ้าเป็นรูปอนิเมชันที่ 2
+				image = right2; // ใช้รูปขวารูปที่ 2
+			}
+			break;
+		}
+		// วาดรูปภาพผู้เล่นบนหน้าจอที่ตำแหน่ง screenX, screenY โดยใช้รูปภาพที่ปรับขนาดมาแล้ว
+		g2.drawImage(image, screenX, screenY, null); 
+	}
+}

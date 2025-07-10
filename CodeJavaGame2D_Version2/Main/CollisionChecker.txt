@@ -1,0 +1,135 @@
+package JavaLearn; // บอกว่าคลาสนี้อยู่ในแพ็กเกจชื่อ JavaLearn
+
+import Entity.Entity; // import คลาส Entity
+
+public class CollisionChecker { // คลาสสำหรับตรวจสอบการชน (Collision)
+
+	GamePanel gp; // ตัวแปรอ้างอิงถึง GamePanel เพื่อเข้าถึงข้อมูลเกม
+	
+	public CollisionChecker(GamePanel gp) { // Constructor ของ CollisionChecker
+		this.gp = gp; // กำหนด GamePanel ที่รับมาให้กับตัวแมน gp ของคลาสนี้
+	}
+	
+	public void checkTile(Entity entity) { // เมธอดสำหรับตรวจสอบการชนระหว่าง Entity กับ Tile
+		// คำนวณขอบเขตของ Solid Area ของ Entity ในพิกัดโลก
+		int entityLeftWorldX = entity.worldX + entity.solidArea.x;
+		int entityRightWorldX = entity.worldX + entity.solidArea.x + entity.solidArea.width;
+		int entityTopWorldY = entity.worldY + entity.solidArea.y;
+		int entityBottomWorldY = entity.worldY + entity.solidArea.y + entity.solidArea.height;
+		
+		// คำนวณคอลัมน์และแถวของ Tile ที่ Entity กำลังยืนอยู่ (หรือกำลังจะชน)
+		int entityLeftCol = entityLeftWorldX/gp.tileSize;
+		int entityRightCol = entityRightWorldX/gp.tileSize;
+		int entityTopRow = entityTopWorldY/gp.tileSize;
+		int entityBottomRow = entityBottomWorldY/gp.tileSize;
+		
+		int tileNum1, tileNum2; // ตัวแปรสำหรับเก็บหมายเลข Tile ที่จะตรวจสอบ
+		
+		switch(entity.direction) { // ตรวจสอบตามทิศทางที่ Entity กำลังจะเคลื่อนที่
+		case "up": // ถ้า Entity จะเคลื่อนที่ขึ้น
+			entityTopRow = (entityTopWorldY - entity.speed)/gp.tileSize; // คำนวณแถวของ Tile ที่จะชนเมื่อเคลื่อนที่ขึ้น
+			tileNum1 = gp.tileM.mapTileNum[entityLeftCol][entityTopRow]; // Tile ด้านซ้ายบน
+			tileNum2 = gp.tileM.mapTileNum[entityRightCol][entityTopRow]; // Tile ด้านขวาบน
+			// ถ้า Tile ใด Tile หนึ่งมี collision เป็น true (เช่น เป็นผนัง)
+			if(gp.tileM.tile[tileNum1].collision == true || gp.tileM.tile[tileNum2].collision == true) {
+				entity.collisionOn = true; // ตั้งค่าว่ามีการชน
+			}
+			break;
+		case "down": // ถ้า Entity จะเคลื่อนที่ลง
+			entityBottomRow = (entityBottomWorldY + entity.speed)/gp.tileSize; // คำนวณแถวของ Tile ที่จะชนเมื่อเคลื่อนที่ลง
+			tileNum1 = gp.tileM.mapTileNum[entityLeftCol][entityBottomRow]; // Tile ด้านซ้ายล่าง
+			tileNum2 = gp.tileM.mapTileNum[entityRightCol][entityBottomRow]; // Tile ด้านขวาล่าง
+			if(gp.tileM.tile[tileNum1].collision == true || gp.tileM.tile[tileNum2].collision == true) {
+				entity.collisionOn = true;
+			}
+			break;
+		case "left": // ถ้า Entity จะเคลื่อนที่ซ้าย
+			entityLeftCol = (entityLeftWorldX - entity.speed)/gp.tileSize; // คำนวณคอลัมน์ของ Tile ที่จะชนเมื่อเคลื่อนที่ซ้าย
+			tileNum1 = gp.tileM.mapTileNum[entityLeftCol][entityTopRow]; // Tile ด้านซ้ายบน
+			tileNum2 = gp.tileM.mapTileNum[entityLeftCol][entityBottomRow]; // Tile ด้านซ้ายล่าง
+			if(gp.tileM.tile[tileNum1].collision == true || gp.tileM.tile[tileNum2].collision == true) {
+				entity.collisionOn = true;
+			}
+			break;
+		case "right": // ถ้า Entity จะเคลื่อนที่ขวา
+			entityRightCol = (entityRightWorldX - entity.speed)/gp.tileSize; // คำนวณคอลัมน์ของ Tile ที่จะชนเมื่อเคลื่อนที่ขวา
+			tileNum1 = gp.tileM.mapTileNum[entityRightCol][entityTopRow]; // Tile ด้านขวาบน
+			tileNum2 = gp.tileM.mapTileNum[entityRightCol][entityBottomRow]; // Tile ด้านขวาล่าง
+			if(gp.tileM.tile[tileNum1].collision == true || gp.tileM.tile[tileNum2].collision == true) {
+				entity.collisionOn = true;
+			}
+			break;
+		}
+	}
+
+	public int checkObject(Entity entity, boolean player) { // เมธอดสำหรับตรวจสอบการชนระหว่าง Entity กับ Object
+		
+		int index = 999; // กำหนดค่าเริ่มต้น 999 ถ้าไม่ชนกับ Object ใดๆ
+		
+		for(int i = 0; i < gp.obj.length; i++) { // วนลูปตรวจสอบ Object ทุกตัวในเกม
+			
+			if(gp.obj[i] != null) { // ถ้า Object ตัวนั้นมีอยู่จริง (ไม่เป็น null)
+				
+				// กำหนดตำแหน่ง Solid Area ของ Entity ชั่วคราว (เพื่อให้ชนกับ Object ได้ถูกตำแหน่ง)
+				entity.solidArea.x = entity.worldX + entity.solidArea.x;
+				entity.solidArea.y = entity.worldY + entity.solidArea.y;
+				// กำหนดตำแหน่ง Solid Area ของ Object ชั่วคราว
+				gp.obj[i].solidArea.x = gp.obj[i].worldX + gp.obj[i].solidArea.x;
+				gp.obj[i].solidArea.y = gp.obj[i].worldY + gp.obj[i].solidArea.y;
+				
+				switch(entity.direction) { // ตรวจสอบตามทิศทางที่ Entity กำลังจะเคลื่อนที่
+				case "up": // ถ้า Entity จะเคลื่อนที่ขึ้น
+					entity.solidArea.y -= entity.speed; // เลื่อน Solid Area ของ Entity ขึ้นตามความเร็ว
+					if(entity.solidArea.intersects(gp.obj[i].solidArea)) { // ตรวจสอบว่า Solid Area ของ Entity ชนกับ Object หรือไม่
+						if(gp.obj[i].collision == true) { // ถ้า Object นั้นมี collision เป็น true
+							entity.collisionOn = true; // ตั้งค่าว่ามีการชน
+						}
+						if(player == true) { // ถ้า Entity ที่กำลังตรวจสอบคือผู้เล่น
+							index = i; // เก็บ index ของ Object ที่ชนไว้
+						}
+					}
+					break;
+				case "down": // ถ้า Entity จะเคลื่อนที่ลง
+					entity.solidArea.y += entity.speed;
+					if(entity.solidArea.intersects(gp.obj[i].solidArea)) {
+						if(gp.obj[i].collision == true) {
+							entity.collisionOn = true;
+						}
+						if(player == true) {
+							index = i;
+						}
+					}
+					break;
+				case "left": // ถ้า Entity จะเคลื่อนที่ซ้าย
+					entity.solidArea.x -= entity.speed;
+					if(entity.solidArea.intersects(gp.obj[i].solidArea)) {
+						if(gp.obj[i].collision == true) {
+							entity.collisionOn = true;
+						}
+						if(player == true) {
+							index = i;
+						}
+					}
+					break;
+				case "right": // ถ้า Entity จะเคลื่อนที่ขวา
+					entity.solidArea.x += entity.speed;
+					if(entity.solidArea.intersects(gp.obj[i].solidArea)) {
+						if(gp.obj[i].collision == true) {
+							entity.collisionOn = true;
+						}
+						if(player == true) {
+							index = i;
+						}
+					break;
+					}
+				}
+				// รีเซ็ตตำแหน่ง Solid Area ของ Entity และ Object กลับสู่ค่าเริ่มต้น
+				entity.solidArea.x = entity.solidAreaDefaultX;
+				entity.solidArea.y = entity.solidAreaDefaultY;
+				gp.obj[i].solidArea.x = gp.obj[i].solidAreaDefaultX;
+				gp.obj[i].solidArea.y = gp.obj[i].solidAreaDefaultY;
+			}
+		}		
+		return index; // ส่งคืน index ของ Object ที่ชน (ถ้าไม่มีจะส่ง 999)
+	}
+}

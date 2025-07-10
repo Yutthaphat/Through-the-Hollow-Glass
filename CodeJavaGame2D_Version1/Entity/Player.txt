@@ -1,0 +1,243 @@
+// ยังอยู่ในแพ็กเกจ Entity นะ
+package Entity;
+
+// พวกนี้คือคลาสที่ต้อง import เข้ามาใช้
+import java.awt.Graphics2D; // สำหรับวาดรูป วาดภาพต่างๆ
+import java.awt.Rectangle; // กล่องสี่เหลี่ยมสำหรับพื้นที่ชน
+import java.awt.image.BufferedImage; // เก็บรูป
+import java.io.IOException; // ไว้จัดการถ้าเกิดมีปัญหาตอนอ่านไฟล์
+
+import javax.imageio.ImageIO; // คลาสสำหรับอ่านไฟล์รูปภาพ
+
+import JavaLearn.GamePanel; // ดึง GamePanel จากแพ็กเกจ JavaLearn มาใช้
+import JavaLearn.KeyHandler; // ดึง KeyHandler จากแพ็กเกจ JavaLearn มาใช้
+
+// คลาส Player นี่แหละคือตัวละครเอกของเรา สืบทอดมาจาก Entity
+public class Player extends Entity{
+
+	// ตัวแปรพวกนี้ไว้สำหรับอ้างอิงถึง GamePanel กับ KeyHandler เพื่อให้ผู้เล่นโต้ตอบกับเกมได้
+	GamePanel gp;
+	KeyHandler keyH;
+	
+	// screenX, screenY คือตำแหน่งของ Player บนหน้าจอเกม ซึ่งจะถูกตรึงไว้ตรงกลางเสมอ
+	public final int screenX;
+	public final int screenY;
+	// hasKey นับจำนวนกุญแจที่ผู้เล่นเก็บได้
+	public int hasKey = 0;
+	
+	// นี่คือตัวสร้าง Player (Constructor) เวลาเราจะสร้าง Player ใหม่ก็จะเรียกใช้ตัวนี้
+	public Player(GamePanel gp, KeyHandler keyH) {
+		
+		// กำหนดค่า gp กับ keyH ให้กับตัวแปรของ Player นี้
+		this.gp = gp;
+		this.keyH = keyH;
+		
+		// คำนวณตำแหน่งของผู้เล่นบนหน้าจอให้อยู่ตรงกลางเป๊ะๆ
+		screenX = gp.screenWidth/2 - (gp.tileSize/2);
+		screenY = gp.screenHeight/2 - (gp.tileSize/2);
+		
+		// สร้างกล่อง solidArea สำหรับชนกัน (ตัวผู้เล่นไม่ได้ชนเต็มรูปนะ ชนแค่บางส่วน)
+		solidArea = new Rectangle();
+		solidArea.x = 0; // ตำแหน่ง X ของ solidArea เทียบกับตัวผู้เล่น
+		solidArea.y = 16; // ตำแหน่ง Y ของ solidArea เทียบกับตัวผู้เล่น
+		// เก็บค่าเริ่มต้นของ solidArea ไว้เผื่อต้องรีเซ็ต
+		solidAreaDefaultX = solidArea.x;
+		solidAreaDefaultY = solidArea.y;
+		solidArea.width = 32; // ความกว้าง
+		solidArea.height = 32; // ความสูง
+		
+		// ตั้งค่าเริ่มต้นของ Player เช่น ตำแหน่ง ความเร็ว
+		setDefaultValues();
+		// โหลดรูปภาพ Player เข้ามา
+		getPlayerImage();
+	}
+
+	// เมธอดนี้ไว้ตั้งค่าเริ่มต้นของผู้เล่น
+	public void setDefaultValues() {
+		
+		// กำหนดตำแหน่งเริ่มต้นของ Player ในโลกของเกม (ไม่ใช่บนหน้าจอ)
+		worldX = gp.tileSize * 23; // ตำแหน่ง X ใน World Map
+		worldY = gp.tileSize * 21; // ตำแหน่ง Y ใน World Map
+		speed = 4; // ความเร็วเริ่มต้น
+		direction = "down"; // หันหน้าลง
+	}
+
+	// เมธอดนี้ไว้โหลดรูปภาพ Player ทั้งหมด
+	public void getPlayerImage() {
+		try {
+			// โหลดรูปภาพแต่ละท่าเดินจากไฟล์
+			up1 = ImageIO.read(getClass().getResourceAsStream("/player/boy_up_1.png"));
+			up2 = ImageIO.read(getClass().getResourceAsStream("/player/boy_up_2.png"));
+			down1 = ImageIO.read(getClass().getResourceAsStream("/player/boy_down_1.png"));
+			down2 = ImageIO.read(getClass().getResourceAsStream("/player/boy_down_2.png"));
+			left1 = ImageIO.read(getClass().getResourceAsStream("/player/boy_left_1.png"));
+			left2 = ImageIO.read(getClass().getResourceAsStream("/player/boy_left_2.png"));
+			right1 = ImageIO.read(getClass().getResourceAsStream("/player/boy_right_1.png"));
+			right2 = ImageIO.read(getClass().getResourceAsStream("/player/boy_right_2.png"));
+			
+		}catch(IOException e) {
+			// ถ้าโหลดรูปไม่ได้ ก็ให้มันปริ้นท์ข้อผิดพลาดออกมา
+			e.printStackTrace();
+		}
+	}
+	
+	// เมธอด update() นี่สำคัญมาก จะถูกเรียกทุกๆ เฟรมเพื่ออัปเดตสถานะของ Player
+	public void update() {
+		
+		// เช็คว่ามีปุ่มทิศทางไหนถูกกดอยู่รึเปล่า
+		if(keyH.upPressed == true || keyH.downPressed == true || keyH.leftPressed == true || keyH.rightPressed == true) {
+			
+			// ถ้ากดปุ่มไหน ก็เปลี่ยนทิศทางตัวละครไปตามนั้น
+			if(keyH.upPressed == true){  // ถ้ากด W
+				direction = "up";   
+			}
+			else if(keyH.downPressed == true){   // ถ้ากด S
+				direction = "down";  
+			}
+			else if(keyH.leftPressed == true){   // ถ้ากด A
+				direction = "left";  
+			}
+			else if(keyH.rightPressed == true){   // ถ้ากด D
+				direction = "right";    
+			}
+			
+			// --- ตรวจสอบการชน ---
+			collisionOn = false; // ตั้งค่าเริ่มต้นว่ายังไม่ชนอะไรนะ
+			gp.cChecker.checkTile(this); // เรียกตัวเช็คชนไปเช็คว่าชนกับพวกพื้น กำแพง หรือน้ำมั้ย
+			
+			// เช็คว่าชนกับวัตถุ (Object) อะไรมั้ย เช่น กุญแจ ประตู รองเท้า กล่องสมบัติ
+			int objIndex = gp.cChecker.checkObject(this, true); // true คือบอกว่าเป็นผู้เล่นนะ
+			// ถ้าชนวัตถุ ก็จัดการตามวัตถุที่ชน
+			pickUpObject(objIndex);
+			
+			// ถ้า **ไม่** มีการชนเกิดขึ้น ผู้เล่นก็สามารถเคลื่อนที่ได้
+			if(collisionOn == false) {
+				
+				// เคลื่อนที่ตัวละครไปตามทิศทางที่กำหนด ด้วยความเร็วที่ตั้งไว้
+				switch(direction) {
+				case"up":
+					worldY -= speed; // ขึ้น คือค่า Y ลดลง
+					break;
+				case"down":
+					worldY += speed; // ลง คือค่า Y เพิ่มขึ้น
+					break;
+				case"left":
+					worldX -= speed; // ซ้าย คือค่า X ลดลง
+					break;
+				case"right":
+					worldX += speed; // ขวา คือค่า X เพิ่มขึ้น
+					break;
+				}
+			}
+			
+			// --- การทำภาพเคลื่อนไหว (Sprite Animation) ---
+			spriteCounter++; // เพิ่มตัวนับไปเรื่อยๆ
+			if(spriteCounter > 12) { // ถ้าตัวนับเกิน 12 (ประมาณ 12 เฟรมของเกม)
+				if(spriteNum == 1) { // ถ้าตอนนี้แสดงรูปที่ 1 อยู่
+					spriteNum = 2; // ก็เปลี่ยนไปแสดงรูปที่ 2
+				}
+				else if(spriteNum == 2) { // ถ้าตอนนี้แสดงรูปที่ 2 อยู่
+					spriteNum = 1; // ก็เปลี่ยนกลับไปแสดงรูปที่ 1
+				}
+				spriteCounter = 0; // รีเซ็ตตัวนับกลับเป็น 0
+			}
+		}
+		/*
+		else {
+			counter2++;
+			if(counter2 == 20) {
+				spriteNum = 1;
+				counter2 = 0;
+			}
+		}*/ // ส่วนนี้เป็นโค้ดที่ถูกคอมเมนต์ไว้ ไม่ได้ใช้งานจริงในตอนนี้
+	}
+
+	// เมธอดนี้ไว้จัดการตอนผู้เล่นเก็บของหรือชนกับวัตถุ
+	public void pickUpObject(int i) {
+		
+		// ถ้าค่า i ไม่ใช่ 999 แสดงว่าชนกับ Object จริงๆ (999 คือไม่มีการชน)
+		if(i != 999) {
+			
+			String objectName = gp.obj[i].name; // ดึงชื่อของ Object ที่ชนมา
+			
+			// ใช้ switch case ในการจัดการตามชื่อของ Object
+			switch(objectName) {
+			case "Key": // ถ้าชนกุญแจ
+				gp.playSE(1); // เล่นเสียงเก็บของ
+				hasKey++; // เพิ่มจำนวนกุญแจ
+				gp.obj[i] = null; // ทำให้กุญแจหายไป (ตั้งเป็น null)
+				gp.ui.showMessage("You got a key!"); // แสดงข้อความบนจอว่าได้กุญแจแล้ว
+				break;
+			case "Door": // ถ้าชนประตู
+				if(hasKey > 0) { // ถ้ามีกุญแจอยู่ในตัว
+					gp.playSE(3); // เล่นเสียงปลดล็อก
+					gp.obj[i] = null; // ทำให้ประตูหายไป
+					hasKey--; // ลดจำนวนกุญแจลง 1
+					gp.ui.showMessage("You opened the door!"); // แสดงข้อความว่าเปิดประตูแล้ว
+				}
+				else { // ถ้าไม่มีกุญแจ
+					gp.ui.showMessage("You need a key!"); // แสดงข้อความว่าต้องใช้กุญแจ
+				}
+				break;
+			case "Boots": // ถ้าชนรองเท้า
+				gp.playSE(2); // เล่นเสียง powerup
+				speed += 1; // เพิ่มความเร็วให้ผู้เล่น
+				gp.obj[i] = null; // ทำให้รองเท้าหายไป
+				gp.ui.showMessage("Speed up!"); // แสดงข้อความว่าเร็วขึ้น
+				break;
+			case "Chest": // ถ้าชนหีบสมบัติ
+				gp.ui.gameFinished = true; // ตั้งสถานะเกมว่าจบแล้ว
+				gp.stopMusic(); // หยุดเพลงพื้นหลัง
+				gp.playSE(4); // เล่นเสียงฉลอง
+				break;
+			}
+		}
+	}
+	
+	// เมธอด draw() สำหรับวาดผู้เล่นบนหน้าจอเกม
+	public void draw(Graphics2D g2) {
+		// g2.setColor(Color.WHITE);  // อันนี้เป็นโค้ดเก่าที่คอมเมนต์ไว้
+		// g2.fillRect(x, y, width, height);  // อันนี้ก็ด้วย
+		//g2.fillRect(x, y, gp.tileSize, gp.tileSize); // อันนี้ก็คอมเมนต์
+		
+		BufferedImage image = null; // ตัวแปรนี้จะเก็บรูปภาพของ Player ที่จะถูกวาดในเฟรมนั้นๆ
+		
+		// เลือกรูปภาพที่จะวาดตามทิศทางที่ผู้เล่นกำลังหันหน้าและเฟรมของ animation
+		switch(direction) {
+		case "up": // ถ้าหันหน้าขึ้น
+			if(spriteNum == 1) { // ถ้าเป็นเฟรมที่ 1
+				image = up1; // ใช้รูป up1
+			}
+			if(spriteNum == 2) { // ถ้าเป็นเฟรมที่ 2
+				image = up2; // ใช้รูป up2
+			}
+			break;
+		case "down": // ถ้าหันหน้าลง
+			if(spriteNum == 1) {
+				image = down1;
+			}
+			if(spriteNum == 2) {
+				image = down2;
+			}
+			break;
+		case "left": // ถ้าหันหน้าซ้าย
+			if(spriteNum == 1) {
+				image = left1;
+			}
+			if(spriteNum == 2) {
+				image = left2;
+			}
+			break;
+		case "right": // ถ้าหันหน้าขวา
+			if(spriteNum == 1) {
+				image = right1;
+			}
+			if(spriteNum == 2) {
+				image = right2;
+			}
+			break;
+		}
+		// วาดรูปภาพที่เลือกไว้ ที่ตำแหน่ง screenX, screenY บนหน้าจอ ด้วยขนาด tileSize
+		g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+	}
+}

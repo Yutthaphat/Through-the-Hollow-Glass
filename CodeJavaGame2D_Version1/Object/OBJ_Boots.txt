@@ -1,0 +1,22 @@
+// อยู่ในแพ็กเกจ Object นะ คลาสนี้คือรองเท้า
+package Object;
+
+// ดึงคลาสที่จำเป็นสำหรับการจัดการรูปภาพ
+import java.io.IOException; // ไว้จัดการ error ตอนอ่านไฟล์
+
+import javax.imageio.ImageIO; // สำหรับอ่านไฟล์รูปภาพ
+
+// คลาส OBJ_Boots นี่คือ Object รองเท้าในเกมของเรา มันเป็นลูกของ SuperObject นะ
+public class OBJ_Boots extends SuperObject{
+	public OBJ_Boots(){
+		
+		name = "Boots"; // ตั้งชื่อให้มันว่า "Boots"
+		try {
+			image = ImageIO.read(getClass().getResourceAsStream("/objects/boots.png")); // โหลดรูปภาพรองเท้า
+			
+		}catch(IOException e) {
+			e.printStackTrace(); // ถ้าโหลดรูปไม่ได้ก็ปริ้นท์ error ออกมา
+		}
+		// รองเท้าไม่มีการชนนะ เพราะเราต้องเดินไปเก็บมัน
+	}
+}

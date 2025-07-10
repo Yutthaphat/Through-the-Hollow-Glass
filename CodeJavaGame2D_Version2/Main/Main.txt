@@ -1,0 +1,24 @@
+package JavaLearn; // บอกว่าคลาสนี้อยู่ในแพ็กเกจชื่อ JavaLearn
+
+import javax.swing.JFrame; // import คลาส JFrame สำหรับสร้างหน้าต่างหลักของโปรแกรม
+
+public class Main { // คลาส Main เป็นจุดเริ่มต้นของการทำงานของโปรแกรม
+	public static void main(String[] args) { // เมธอด main เป็นเมธอดแรกที่ถูกเรียกเมื่อรันโปรแกรม
+		
+		JFrame window = new JFrame(); // สร้าง Object ของ JFrame (หน้าต่างของเกม)
+		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  // ตั้งค่าให้โปรแกรมปิดเมื่อคลิกปุ่มปิดหน้าต่าง (กากบาท)
+		window.setResizable(false);  // ตั้งค่าไม่ให้ผู้ใช้ปรับขนาดหน้าต่างได้
+		window.setTitle("2D Adventure");  // กำหนดชื่อหัวข้อของหน้าต่าง
+		
+		GamePanel gamePanel = new GamePanel(); // สร้าง Object ของ GamePanel (ส่วนหลักของเกมที่วาดภาพ)
+		window.add(gamePanel); // เพิ่ม GamePanel เข้าไปในหน้าต่าง
+		
+		window.pack(); // ปรับขนาดหน้าต่างให้พอดีกับส่วนประกอบภายใน (GamePanel)
+		
+		window.setLocationRelativeTo(null);  // ตั้งค่าตำแหน่งหน้าต่างให้อยู่ตรงกลางหน้าจอ
+		window.setVisible(true); // ทำให้หน้าต่างสามารถมองเห็นได้
+		
+		gamePanel.setupGame(); // เรียกเมธอด setupGame เพื่อตั้งค่าเริ่มต้นของเกม
+		gamePanel.startGameThread(); // เรียกเมธอด startGameThread เพื่อเริ่ม Game Thread (เริ่มเกม)
+	}
+}

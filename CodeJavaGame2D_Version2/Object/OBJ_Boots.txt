@@ -1,0 +1,29 @@
+package Object; // บอกว่าคลาสนี้อยู่ในแพ็กเกจชื่อ Object
+
+import java.io.IOException; // import IOException สำหรับจัดการข้อผิดพลาดเกี่ยวกับการอ่าน/เขียนไฟล์
+
+import javax.imageio.ImageIO; // import ImageIO สำหรับอ่านไฟล์รูปภาพ
+
+import JavaLearn.GamePanel; // import GamePanel เพื่อเข้าถึงข้อมูลเกม
+
+public class OBJ_Boots extends SuperObject{ // คลาส OBJ_Boots สืบทอดจาก SuperObject (เป็น Object ชนิดหนึ่ง)
+	
+	GamePanel gp; // ตัวแปรอ้างอิงถึง GamePanel
+	
+	public OBJ_Boots(GamePanel gp){ // Constructor ของ OBJ_Boots
+		
+		this.gp = gp; // กำหนด GamePanel ที่รับมา
+		
+		name = "Boots"; // กำหนดชื่อของ Object เป็น "Boots"
+		try {
+			// โหลดรูปภาพรองเท้าจาก Resource
+			image = ImageIO.read(getClass().getResourceAsStream("/objects/boots.png"));
+			// ปรับขนาดรูปภาพให้เท่ากับ tileSize ของเกม (ผ่าน UtilityTool ที่อยู่ใน SuperObject)
+			image = uTool.scaleImage(image, gp.tileSize, gp.tileSize);
+			
+		}catch(IOException e) { // ดักจับข้อผิดพลาดหากอ่านไฟล์รูปภาพไม่ได้
+			e.printStackTrace(); // พิมพ์ข้อผิดพลาดใน Console
+		}
+		
+	}
+}

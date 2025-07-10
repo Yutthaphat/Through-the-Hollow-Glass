@@ -1,0 +1,28 @@
+package Object; // บอกว่าคลาสนี้อยู่ในแพ็กเกจชื่อ Object
+
+import java.io.IOException; // import IOException สำหรับจัดการข้อผิดพลาดเกี่ยวกับการอ่าน/เขียนไฟล์
+
+import javax.imageio.ImageIO; // import ImageIO สำหรับอ่านไฟล์รูปภาพ
+
+import JavaLearn.GamePanel; // import GamePanel เพื่อเข้าถึงข้อมูลเกม
+
+public class OBJ_Key extends SuperObject { // คลาส OBJ_Key สืบทอดจาก SuperObject
+	
+	GamePanel gp; // ตัวแปรอ้างอิงถึง GamePanel (ไม่ได้ใช้ใน constructor แต่ถูกส่งมา)
+	
+	public OBJ_Key(GamePanel gp){ // Constructor ของ OBJ_Key
+		// this.gp = gp; // บรรทัดนี้ไม่ได้ใส่ในโค้ดต้นฉบับ แต่อย่างน้อยก็ส่ง gp มาแล้ว
+		
+		name = "Key"; // กำหนดชื่อของ Object เป็น "Key"
+		try {
+			// โหลดรูปภาพกุญแจจาก Resource
+			image = ImageIO.read(getClass().getResourceAsStream("/objects/key.png"));
+			// ปรับขนาดรูปภาพ
+			image = uTool.scaleImage(image, gp.tileSize, gp.tileSize);
+			
+		}catch(IOException e) { // ดักจับข้อผิดพลาด
+			e.printStackTrace();
+		}
+		
+	}
+}

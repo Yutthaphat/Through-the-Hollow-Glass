@@ -1,0 +1,46 @@
+package JavaLearn; // บอกว่าคลาสนี้อยู่ในแพ็กเกจชื่อ JavaLearn
+
+import java.net.URL; // import คลาส URL สำหรับจัดการ URL ของไฟล์เสียง
+
+import javax.sound.sampled.AudioInputStream; // import AudioInputStream สำหรับสตรีมข้อมูลเสียง
+import javax.sound.sampled.AudioSystem; // import AudioSystem สำหรับเข้าถึงระบบเสียง
+import javax.sound.sampled.Clip; // import Clip สำหรับเล่นไฟล์เสียงสั้นๆ
+
+public class Sound { // คลาสสำหรับจัดการไฟล์เสียงในเกม
+
+	Clip clip; // ตัวแปร Clip สำหรับควบคุมการเล่นเสียง
+	URL soundURL[] = new URL[30]; // อาร์เรย์สำหรับเก็บ URL ของไฟล์เสียงต่างๆ (รองรับ 30 ไฟล์)
+	
+	public Sound() { // Constructor ของ Sound
+		// กำหนด URL ของไฟล์เสียงแต่ละไฟล์
+		soundURL[0] = getClass().getResource("/sound/BlueBoyAdventure.wav"); // เพลงพื้นหลัง
+		soundURL[1] = getClass().getResource("/sound/coin.wav"); // เสียงเก็บเหรียญ/กุญแจ
+		soundURL[2] = getClass().getResource("/sound/powerup.wav"); // เสียง Power-up (รองเท้า)
+		soundURL[3] = getClass().getResource("/sound/unlock.wav"); // เสียงปลดล็อก (ประตู)
+		soundURL[4] = getClass().getResource("/sound/fanfare.wav"); // เสียงจบเกม/ชนะ
+	}
+	
+	public void setFile(int i) { // เมธอดสำหรับกำหนดไฟล์เสียงที่จะเล่น
+		
+		try {			
+			AudioInputStream ais = AudioSystem.getAudioInputStream(soundURL[i]); // สร้าง AudioInputStream จาก URL ของไฟล์เสียง
+			clip = AudioSystem.getClip(); // รับ Clip Object จาก AudioSystem
+			clip.open(ais); // เปิด AudioInputStream ด้วย Clip
+			
+		}catch(Exception e) {	// ดักจับข้อผิดพลาดหากมีปัญหาในการโหลดไฟล์เสียง
+			// e.printStackTrace(); // สามารถ uncomment เพื่อดูข้อผิดพลาดได้
+		}
+	}
+
+	public void play() { // เมธอดสำหรับเล่นเสียง
+		clip.start(); // เริ่มเล่น Clip
+	}
+
+	public void loop() { // เมธอดสำหรับเล่นเสียงวนซ้ำ
+		clip.loop(Clip.LOOP_CONTINUOUSLY); // เล่น Clip วนซ้ำไปเรื่อยๆ
+	}
+
+	public void stop() { // เมธอดสำหรับหยุดเล่นเสียง
+		clip.stop(); // หยุดเล่น Clip
+	}
+}
