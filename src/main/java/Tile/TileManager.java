@@ -1,15 +1,12 @@
 package Tile;
 
-import common.Camera;
 import JavaLearn.GamePanel;
 import Map.Map;
+import common.Camera;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 public class TileManager {
 	
@@ -34,7 +31,7 @@ public class TileManager {
 			// โหลดรูปภาพ Tile ประเภทต่างๆ
 			tile[0] = new Tile();
 			tile[0].image = ImageIO.read(getClass().getResourceAsStream("/tiles/grass.png"));
-			
+
 			tile[1] = new Tile();
 			tile[1].image = ImageIO.read(getClass().getResourceAsStream("/tiles/wall.png"));
 			tile[1].collision = true;
@@ -59,40 +56,6 @@ public class TileManager {
 		}
 	}
 
-	public void loadMap(String filePath) {
-		
-		try {
-			InputStream is = getClass().getResourceAsStream(filePath.replace("res/", "/"));
-			BufferedReader br = new BufferedReader(new InputStreamReader(is));
-			
-			int col = 0;
-			int row = 0;
-			// ลูปอ่านข้อมูลแผนที่
-			while(col < gp.maxWorldCol && row < gp.maxWorldRow) { // วนลูปผิดตรรกะสำหรับการอ่านไฟล์
-				
-				String line = br.readLine(); // อ่านหนึ่งบรรทัด
-				
-				while(col < gp.maxWorldCol) { // วนลูปคอลัมน์ อาจเกินขนาดจริงของ numbers[]
-					
-					String numbers[] = line.split(" "); // แยกตัวเลข
-					
-					int num = Integer.parseInt(numbers[col]); // อาจเกิด ArrayIndexOutOfBoundsException
-					
-					map.mapTileNum[col][row] = num; // เก็บข้อมูลลงในอาเรย์
-					col++;
-				}
-				if(col == gp.maxWorldCol) {
-					col = 0;
-					row++;
-				}
-			}
-			br.close();
-			
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
 	public void draw(Graphics2D g2) {
 	    int worldCol = 0;
 	    int worldRow = 0;
