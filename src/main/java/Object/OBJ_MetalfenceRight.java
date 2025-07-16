@@ -5,14 +5,15 @@ import Entity.Player;
 import javax.imageio.ImageIO;
 import java.io.IOException;
 
-public class OBJ_Door extends SuperObject {
-	public OBJ_Door(){
+public class OBJ_MetalfenceRight extends SuperObject {
+	public OBJ_MetalfenceRight(){
 			
-		name = "Door";
+		name = "MetalfenceRight";
 		isInteractive = true;
 		
 		try {
-			image = ImageIO.read(getClass().getResourceAsStream("/objects/door.png"));
+
+			image = ImageIO.read(getClass().getResourceAsStream("/objects/metalfence_right.png"));
 			
 		}catch(IOException e) {
 			e.printStackTrace();

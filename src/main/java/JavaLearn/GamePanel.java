@@ -23,8 +23,8 @@ public class GamePanel extends JPanel implements Runnable{
 	public final int screenHeight = tileSize * maxScreenRow;  // 576 pixels
 	
 	//WORLD SETTINGS
-	public final int maxWorldCol = 50;
-	public final int maxWorldRow = 50;
+	public final int maxWorldCol = 66;
+	public final int maxWorldRow = 42;
 
 	//FPS
 	int FPS = 60;	
@@ -54,7 +54,7 @@ public class GamePanel extends JPanel implements Runnable{
 
 		// Initialize camera at player center
 		camera = new Camera(23 * tileSize + tileSize / 2, 21 * tileSize + tileSize / 2, screenWidth, screenHeight);
-		map = new ForestMap(maxWorldCol, maxWorldRow, 10);
+		map = new ForestMap(maxWorldCol, maxWorldRow, 30);
 		map.loadMap(this);
 		map.setObjects(this);
 		tileM = new TileManager(this, camera, map);

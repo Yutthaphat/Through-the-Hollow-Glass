@@ -1,0 +1,41 @@
+package Object;
+
+import Entity.Player;
+
+import javax.imageio.ImageIO;
+import java.io.IOException;
+
+public class OBJ_MetalfenceLeft extends SuperObject {
+    public OBJ_MetalfenceLeft(){
+
+        name = "MetalfenceLeft";
+        isInteractive = true;
+
+        try {
+
+            image = ImageIO.read(getClass().getResourceAsStream("/objects/metalfence_left.png"));
+
+        }catch(IOException e) {
+            e.printStackTrace();
+        }
+        collision = true;
+    }
+
+    @Override
+    public void onInteract(Player player) {
+        if (player.hasKey > 0) {
+            player.gp.playSE(3);
+            for (int i = 0; i < player.gp.map.objects.length; i++) {
+                if (player.gp.map.objects[i] == this) {
+                    player.gp.map.objects[i] = null;
+                    break;
+                }
+            }
+            player.hasKey--;
+            player.gp.ui.showMessage("You opened the door!");
+        } else {
+            player.gp.ui.showMessage("You need a key!");
+        }
+    }
+}
+
