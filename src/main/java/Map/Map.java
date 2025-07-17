@@ -1,7 +1,7 @@
 package Map;
 
 import JavaLearn.GamePanel;
-import Object.SuperObject;
+import ObjectInMap.SuperObject;
 
 public abstract class Map {
     public int[][] mapTileNum;

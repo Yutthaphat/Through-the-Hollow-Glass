@@ -1,9 +1,9 @@
-package Object;
+package ObjectInMap;
+
+import Entity.Player;
 
 import javax.imageio.ImageIO;
-import java.io.File;
 import java.io.IOException;
-import Entity.Player;
 
 public class OBJ_Boots extends SuperObject{
 	public OBJ_Boots(){

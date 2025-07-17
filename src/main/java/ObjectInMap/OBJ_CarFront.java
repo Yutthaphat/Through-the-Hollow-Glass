@@ -1,7 +1,6 @@
-package Object;
+package ObjectInMap;
 
 import javax.imageio.ImageIO;
-import java.io.File;
 import java.io.IOException;
 import Entity.Player;
 

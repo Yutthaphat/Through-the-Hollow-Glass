@@ -1,4 +1,4 @@
-package Object;
+package ObjectInMap;
 
 import Entity.Player;
 

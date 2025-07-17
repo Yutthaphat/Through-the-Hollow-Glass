@@ -1,18 +1,18 @@
-package Object;
+package ObjectInMap;
 
 import Entity.Player;
 
 import javax.imageio.ImageIO;
 import java.io.IOException;
 
-public class OBJ_WoodHead extends SuperObject {
-    public OBJ_WoodHead(){
+public class OBJ_WoodTail extends SuperObject {
+    public OBJ_WoodTail(){
 
-        name = "WoodHead";
+        name = "WoodTail";
         isInteractive = true;
 
         try {
-            image = ImageIO.read(getClass().getResourceAsStream("/objects/wood_head.png"));
+            image = ImageIO.read(getClass().getResourceAsStream("/objects/wood_tail.png"));
 
         }catch(IOException e) {
             e.printStackTrace();

@@ -1,6 +1,6 @@
 package JavaLearn;
 
-import Object.OBJ_Key;
+import ObjectInMap.OBJ_Key;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

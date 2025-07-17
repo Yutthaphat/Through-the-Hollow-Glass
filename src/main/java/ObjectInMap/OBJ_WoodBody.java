@@ -1,18 +1,18 @@
-package Object;
+package ObjectInMap;
 
-import javax.imageio.ImageIO;
-import java.io.File;
-import java.io.IOException;
 import Entity.Player;
 
-public class OBJ_CarBack extends SuperObject{
-    public OBJ_CarBack(){
+import javax.imageio.ImageIO;
+import java.io.IOException;
 
-        name = "CarBack";
+public class OBJ_WoodBody extends SuperObject {
+    public OBJ_WoodBody(){
+
+        name = "WoodBody";
         isInteractive = true;
 
         try {
-            image = ImageIO.read(getClass().getResourceAsStream("/objects/car_back.png"));
+            image = ImageIO.read(getClass().getResourceAsStream("/objects/wood_body.png"));
 
         }catch(IOException e) {
             e.printStackTrace();
@@ -22,15 +22,15 @@ public class OBJ_CarBack extends SuperObject{
 
     @Override
     public void onInteract(Player player) {
-        player.gp.playSE(2);
-        player.speed += 1;
+        player.gp.playSE(1);
+        player.hasKey++;
         for (int i = 0; i < player.gp.map.objects.length; i++) {
             if (player.gp.map.objects[i] == this) {
                 player.gp.map.objects[i] = null;
                 break;
             }
         }
-        player.gp.ui.showMessage("Go Home");
+        player.gp.ui.showMessage("Block");
     }
 }
 

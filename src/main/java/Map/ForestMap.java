@@ -1,17 +1,15 @@
 package Map;
 
 import JavaLearn.GamePanel;
-import Object.OBJ_Boots;
-import Object.OBJ_Chest;
-import Object.OBJ_MetalfenceRight;
-import Object.OBJ_MetalfenceLeft;
-import Object.OBJ_CarFront;
-import Object.OBJ_CarBack;
-import Object.OBJ_WoodBoard;
-import Object.OBJ_WoodBody;
-import Object.OBJ_WoodTail;
-import Object.OBJ_WoodHead;
-import Object.OBJ_Key;
+import ObjectInMap.OBJ_Chest;
+import ObjectInMap.OBJ_MetalfenceRight;
+import ObjectInMap.OBJ_MetalfenceLeft;
+import ObjectInMap.OBJ_CarFront;
+import ObjectInMap.OBJ_CarBack;
+import ObjectInMap.OBJ_WoodBoard;
+import ObjectInMap.OBJ_WoodBody;
+import ObjectInMap.OBJ_WoodTail;
+import ObjectInMap.OBJ_WoodHead;
 
 public class ForestMap extends Map {
     public ForestMap(int maxWorldCol, int maxWorldRow, int maxObjects) {
