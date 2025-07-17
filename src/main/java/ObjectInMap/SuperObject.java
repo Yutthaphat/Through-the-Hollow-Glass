@@ -3,12 +3,13 @@ package ObjectInMap;
 import JavaLearn.GamePanel;
 import common.Camera;
 import Entity.Player;
+import common.EventManager;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class SuperObject {
-
+		public boolean isEventTrigger = false;
 		public BufferedImage image;
 		public String name;
 		public boolean collision = false;
@@ -55,4 +56,20 @@ public class SuperObject {
 				g2.drawString(text, px, py);
 			}
 		}
+
+		// Called by EventManager on each step
+		public void onEventStep(int step, EventManager mgr) {}
+
+		// Called by UI to draw the event message
+		public void drawEventMessage(Graphics2D g2, GamePanel gp, int eventStep) {}
+
+		public void removeThisObjectFromMap(Player player){
+			for (int i = 0; i < player.gp.map.objects.length; i++) {
+				if (player.gp.map.objects[i] == this) {
+					player.gp.map.objects[i] = null;
+					break;
+				}
+			}
+		}
+
 }

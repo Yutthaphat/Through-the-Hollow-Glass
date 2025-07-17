@@ -18,6 +18,8 @@ public class Player extends Entity{
 	
 	public int hasKey = 0;
 	
+	private boolean locked = false;
+	
 	public Player(GamePanel gp, KeyHandler keyH, Camera camera) {
 		
 		this.gp = gp;
@@ -57,7 +59,15 @@ public class Player extends Entity{
 		}
 	}
 	
+	public void lock() { locked = true; }
+	public void unlock() { locked = false; }
+	
 	public void update() {
+		
+		if (locked) {
+			// Skip movement and actions during event
+			return;
+		}
 		
 		if(keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed || keyH.interactPressed) {
 			

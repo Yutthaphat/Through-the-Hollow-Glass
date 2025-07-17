@@ -8,6 +8,7 @@ import Tile.TileManager;
 import common.Camera;
 import common.CollisionChecker;
 import common.Sound;
+import common.EventManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,9 +31,10 @@ public class GamePanel extends JPanel implements Runnable{
 	int FPS = 60;	
 	
 	// SYSTEM
+	public EventManager eventManager;
 	public Camera camera;
 	public TileManager tileM;
-	KeyHandler keyH = new KeyHandler();
+	KeyHandler keyH = new KeyHandler(this);
 	Sound music = new Sound();
 	Sound se = new Sound();
 	public CollisionChecker cChecker = new CollisionChecker(this);
@@ -59,6 +61,7 @@ public class GamePanel extends JPanel implements Runnable{
 		map.setObjects(this);
 		tileM = new TileManager(this, camera, map);
 		player = new Player(this, keyH, camera);
+		eventManager = new EventManager(player);
 	}
 	
 	public void setupGame() {
@@ -102,6 +105,7 @@ public class GamePanel extends JPanel implements Runnable{
 
 	public void update() {
 		player.update();
+		// EventManager handles event progression if needed
 		// Camera follows player center
 		updateCamera();
 	}

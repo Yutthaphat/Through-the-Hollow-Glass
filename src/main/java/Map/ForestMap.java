@@ -1,15 +1,7 @@
 package Map;
 
 import JavaLearn.GamePanel;
-import ObjectInMap.OBJ_Chest;
-import ObjectInMap.OBJ_MetalfenceRight;
-import ObjectInMap.OBJ_MetalfenceLeft;
-import ObjectInMap.OBJ_CarFront;
-import ObjectInMap.OBJ_CarBack;
-import ObjectInMap.OBJ_WoodBoard;
-import ObjectInMap.OBJ_WoodBody;
-import ObjectInMap.OBJ_WoodTail;
-import ObjectInMap.OBJ_WoodHead;
+import ObjectInMap.*;
 
 public class ForestMap extends Map {
     public ForestMap(int maxWorldCol, int maxWorldRow, int maxObjects) {
@@ -111,5 +103,10 @@ public class ForestMap extends Map {
         objects[17] = new OBJ_WoodTail();
         objects[17].worldX = 35 * gp.tileSize;
         objects[17].worldY = 24 * gp.tileSize;
+
+        //for testing
+        objects[18] = new OBJ_Boots();
+        objects[18].worldX = 14 * gp.tileSize;
+        objects[18].worldY = 13 * gp.tileSize;
     }
 } 
