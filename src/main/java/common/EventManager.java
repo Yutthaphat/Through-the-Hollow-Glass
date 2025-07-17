@@ -1,10 +1,9 @@
 package common;
 
 import Entity.Player;
-import ObjectInMap.SuperObject;
 
 public class EventManager {
-    private SuperObject currentEventObject;
+    private EventActionObject currentEventObject;
     private int eventStep = 0;
     private boolean eventActive = false;
     private Player player;
@@ -13,7 +12,7 @@ public class EventManager {
         this.player = player;
     }
 
-    public void startEvent(SuperObject obj) {
+    public void startEvent(EventActionObject obj) {
         currentEventObject = obj;
         eventStep = 0;
         eventActive = true;
@@ -35,6 +34,6 @@ public class EventManager {
 
     public boolean isEventActive() { return eventActive; }
     public int getEventStep() { return eventStep; }
-    public SuperObject getCurrentEventObject() { return currentEventObject; }
+    public EventActionObject getCurrentEventObject() { return currentEventObject; }
     public Player getPlayer() { return player; }
 } 

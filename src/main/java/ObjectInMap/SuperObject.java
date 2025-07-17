@@ -1,14 +1,15 @@
 package ObjectInMap;
 
+import Entity.Player;
 import JavaLearn.GamePanel;
 import common.Camera;
-import Entity.Player;
+import common.EventActionObject;
 import common.EventManager;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class SuperObject {
+public class SuperObject implements EventActionObject {
 		public boolean isEventTrigger = false;
 		public BufferedImage image;
 		public String name;
@@ -61,7 +62,7 @@ public class SuperObject {
 		public void onEventStep(int step, EventManager mgr) {}
 
 		// Called by UI to draw the event message
-		public void drawEventMessage(Graphics2D g2, GamePanel gp, int eventStep) {}
+		public void onActionEvent(Graphics2D g2, GamePanel gp, int eventStep) {}
 
 		public void removeThisObjectFromMap(Player player){
 			for (int i = 0; i < player.gp.map.objects.length; i++) {

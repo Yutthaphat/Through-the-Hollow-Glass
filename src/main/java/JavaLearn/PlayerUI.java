@@ -93,7 +93,7 @@ public class PlayerUI {
 			}
 		}
 		if (gp.eventManager.isEventActive() && gp.eventManager.getCurrentEventObject() != null) {
-			gp.eventManager.getCurrentEventObject().drawEventMessage(g2, gp, gp.eventManager.getEventStep());
+			gp.eventManager.getCurrentEventObject().onActionEvent(g2, gp, gp.eventManager.getEventStep());
 		}
 	}
 }
