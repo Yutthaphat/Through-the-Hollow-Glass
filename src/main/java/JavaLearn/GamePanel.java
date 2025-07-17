@@ -7,8 +7,8 @@ import Map.Map;
 import Tile.TileManager;
 import common.Camera;
 import common.CollisionChecker;
-import common.Sound;
 import common.EventManager;
+import common.Sound;
 
 import javax.swing.*;
 import java.awt.*;
@@ -59,6 +59,7 @@ public class GamePanel extends JPanel implements Runnable{
 		map = new ForestMap(maxWorldCol, maxWorldRow, 30);
 		map.loadMap(this);
 		map.setObjects(this);
+		map.setCheckpoints(this);
 		tileM = new TileManager(this, camera, map);
 		player = new Player(this, keyH, camera);
 		eventManager = new EventManager(player);
@@ -105,7 +106,9 @@ public class GamePanel extends JPanel implements Runnable{
 
 	public void update() {
 		player.update();
-		// EventManager handles event progression if needed
+		if (map.checkpointManager != null) {
+			map.checkpointManager.update(player, eventManager);
+		}
 		// Camera follows player center
 		updateCamera();
 	}

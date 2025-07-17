@@ -2,6 +2,8 @@ package Map;
 
 import JavaLearn.GamePanel;
 import ObjectInMap.*;
+import CheckpointSystem.CheckpointManager;
+import CheckpointSystem.Checkpoint_Story;
 
 public class ForestMap extends Map {
     public ForestMap(int maxWorldCol, int maxWorldRow, int maxObjects) {
@@ -108,5 +110,12 @@ public class ForestMap extends Map {
         objects[18] = new OBJ_Boots();
         objects[18].worldX = 14 * gp.tileSize;
         objects[18].worldY = 13 * gp.tileSize;
+    }
+
+    @Override
+    public void setCheckpoints(GamePanel gp) {
+        checkpointManager = new CheckpointManager();
+        // Example: add a story checkpoint at tile (10,10), size 48x48
+        checkpointManager.addCheckpoint(new Checkpoint_Story(gp.tileSize * 14, gp.tileSize * 13, gp.tileSize, gp.tileSize));
     }
 } 
