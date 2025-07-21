@@ -47,6 +47,7 @@ public class Checkpoint_Start_Forest_Scene extends Checkpoint {
     @Override
     public void onActionEvent(Graphics2D g2, GamePanel gp, int eventStep) {
         calculateSecond();
+        if (eventStep == 10) return; // use for skip cut scene
 
         if (!isAfterSeconds(6)) {
             int transparentNum = 0;

@@ -22,10 +22,6 @@ public class GamePanel extends JPanel implements Runnable{
 	public final int maxScreenRow = 12;  // ขนาดแนวตั้ง
 	public final int screenWidth = tileSize * maxScreenCol;  // 768 pixels
 	public final int screenHeight = tileSize * maxScreenRow;  // 576 pixels
-	
-	//WORLD SETTINGS
-	public final int maxWorldCol = 66;
-	public final int maxWorldRow = 42;
 
 	//FPS
 	public final int FPS = 60;
@@ -57,7 +53,7 @@ public class GamePanel extends JPanel implements Runnable{
 
 		// Initialize camera at player center
 		camera = new Camera(23 * tileSize + tileSize / 2, 21 * tileSize + tileSize / 2, screenWidth, screenHeight);
-		map = new ForestMap(maxWorldCol, maxWorldRow, 30);
+		map = new ForestMap(66, 44, 30);
 		map.loadMap(this);
 		map.setObjects(this);
 		map.setCheckpoints(this);

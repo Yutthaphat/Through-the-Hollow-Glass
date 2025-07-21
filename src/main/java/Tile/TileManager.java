@@ -69,7 +69,7 @@ public class TileManager {
 	    Camera gpCamera = gp.camera;
 	    
 	    // ปรับปรุงลูป: วนลูปทั่วทั้ง World Map (ตาม maxWorldCol, maxWorldRow)
-	    while(worldCol < gp.maxWorldCol && worldRow < gp.maxWorldRow) { 
+	    while(worldCol < gp.map.maxWorldCol && worldRow < gp.map.maxWorldRow) {
 	        
 	        int tileNum = map.mapTileNum[worldCol][worldRow];
 	        
@@ -94,7 +94,7 @@ public class TileManager {
 
 	        worldCol++;
 	        
-	        if(worldCol == gp.maxWorldCol) {
+	        if(worldCol == gp.map.maxWorldCol) {
 	            worldCol = 0;
 	            worldRow++;
 	        }
