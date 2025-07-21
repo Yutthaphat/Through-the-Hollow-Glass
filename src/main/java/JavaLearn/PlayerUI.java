@@ -15,6 +15,7 @@ public class PlayerUI {
 	public String message = "";
 	int messageCounter = 0;
 	public boolean gameFinished = false;
+	public boolean isPlayerUIOn = true;
 	
 	double playTime;
 	DecimalFormat dFormat = new DecimalFormat("#0.00");
@@ -36,8 +37,7 @@ public class PlayerUI {
 	
 	public void draw(Graphics2D g2) {
 		
-		if(gameFinished == true) {
-			
+		if(gameFinished) {
 			g2.setFont(arial_40);
 			g2.setColor(Color.white);
 			
@@ -68,7 +68,8 @@ public class PlayerUI {
 			
 			gp.gameThread = null;
 		}
-		else {
+		else if (isPlayerUIOn) {
+
 			g2.setFont(arial_40);
 			g2.setColor(Color.white);
 			g2.drawImage(keyImage, gp.tileSize/2, gp.tileSize/2, gp.tileSize, gp.tileSize, null);

@@ -8,6 +8,7 @@ import common.TextBoxUtil;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.IOException;
+import java.util.List;
 
 public class OBJ_Boots extends SuperObject {
 	public OBJ_Boots() {
@@ -36,7 +37,7 @@ public class OBJ_Boots extends SuperObject {
 	public void onActionEvent(Graphics2D g2, GamePanel gp, int eventStep) {
 		String message = (eventStep == 0) ? "You found a speed boot" : "You receive speed x2";
 		String hint = "Press space or enter to proceed";
-		TextBoxUtil.drawEventBox(g2, gp.screenWidth, message, hint);
+		TextBoxUtil.drawEventBox(g2, gp.screenWidth, List.of(message), hint);
 	}
 
 	@Override

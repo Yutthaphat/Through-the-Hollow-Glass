@@ -28,7 +28,7 @@ public class GamePanel extends JPanel implements Runnable{
 	public final int maxWorldRow = 42;
 
 	//FPS
-	int FPS = 60;	
+	public final int FPS = 60;
 	
 	// SYSTEM
 	public EventManager eventManager;
@@ -46,6 +46,7 @@ public class GamePanel extends JPanel implements Runnable{
 	public Player player;
 	public Map map;
     public int gameState = CommonConstant.STATE_MENU;
+    public boolean isCameraFollowPlayer = true;
 
 	public GamePanel () {
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));  // กำหนดขนาดของคลาสนี้(JPanel)
@@ -60,8 +61,8 @@ public class GamePanel extends JPanel implements Runnable{
 		map.loadMap(this);
 		map.setObjects(this);
 		map.setCheckpoints(this);
-		tileM = new TileManager(this, camera, map);
-		player = new Player(this, keyH, camera);
+		tileM = new TileManager(this, map);
+		player = new Player(this, keyH);
 		eventManager = new EventManager(player);
 	}
 	
@@ -110,7 +111,9 @@ public class GamePanel extends JPanel implements Runnable{
 			map.checkpointManager.update(player, eventManager);
 		}
 		// Camera follows player center
-		updateCamera();
+		if (isCameraFollowPlayer) {
+			updateCamera();
+		}
 	}
 
 	public void updateCamera() {

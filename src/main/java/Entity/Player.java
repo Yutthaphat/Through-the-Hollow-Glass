@@ -14,18 +14,16 @@ public class Player extends Entity{
 
 	public GamePanel gp;
 	KeyHandler keyH;
-	Camera camera;
-	
+
 	public int hasKey = 0;
 	
 	private boolean locked = false;
 	
-	public Player(GamePanel gp, KeyHandler keyH, Camera camera) {
+	public Player(GamePanel gp, KeyHandler keyH) {
 		
 		this.gp = gp;
 		this.keyH = keyH;
-		this.camera = camera;
-		
+
 		solidArea = new Rectangle();
 		solidArea.x = 0;
 		solidArea.y = 16;
@@ -173,8 +171,9 @@ public class Player extends Entity{
 				}
 			}
 		}
-		int screenX = camera.getScreenX(worldX);
-		int screenY = camera.getScreenY(worldY);
+		Camera gpCamera = gp.camera;
+		int screenX = gpCamera.getScreenX(worldX);
+		int screenY = gpCamera.getScreenY(worldY);
 		g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
 	}
 }

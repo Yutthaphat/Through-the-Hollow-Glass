@@ -1,10 +1,12 @@
 package CheckpointSystem;
 
 import Entity.Player;
-import common.EventManager;
 import JavaLearn.GamePanel;
+import common.EventManager;
 import common.TextBoxUtil;
+
 import java.awt.*;
+import java.util.List;
 
 public class Checkpoint_Story extends Checkpoint {
     public Checkpoint_Story(int x, int y, int w, int h) {
@@ -28,6 +30,6 @@ public class Checkpoint_Story extends Checkpoint {
     public void onActionEvent(Graphics2D g2, GamePanel gp, int eventStep) {
         String message = "You reached a story checkpoint!";
         String hint = "Press space or enter to continue";
-        TextBoxUtil.drawEventBox(g2, gp.screenWidth, message, hint);
+        TextBoxUtil.drawEventBox(g2, gp.screenWidth, List.of(message), hint);
     }
 } 

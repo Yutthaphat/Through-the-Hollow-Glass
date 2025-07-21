@@ -13,6 +13,8 @@ public class EventManager {
     }
 
     public void startEvent(EventActionObject obj) {
+        if (currentEventObject == obj) return;
+
         currentEventObject = obj;
         eventStep = 0;
         eventActive = true;

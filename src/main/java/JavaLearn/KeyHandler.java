@@ -30,7 +30,7 @@ public class KeyHandler implements KeyListener{  // รับค่าคีย�
             return;
         }
 		if (code == KeyEvent.VK_W){  // W เดินขึ้น 
-		upPressed = true;
+			upPressed = true;
 		}
 		if (code == KeyEvent.VK_S){    // S เดินลง
 			downPressed = true;
@@ -39,8 +39,8 @@ public class KeyHandler implements KeyListener{  // รับค่าคีย�
 			leftPressed = true;
 		}		
 		if (code == KeyEvent.VK_D){   // D เดินขวา
-				rightPressed = true;
-			}	
+			rightPressed = true;
+		}
 		if (code == KeyEvent.VK_P){
 			interactPressed = true;
 		}
