@@ -10,7 +10,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class SuperObject implements EventActionObject {
-		public boolean isEventTrigger = false;
 		public BufferedImage image;
 		public String name;
 		public boolean collision = false;

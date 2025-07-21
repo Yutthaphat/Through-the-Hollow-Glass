@@ -14,7 +14,6 @@ public class OBJ_Boots extends SuperObject {
 	public OBJ_Boots() {
 		name = "Boots";
 		isInteractive = true;
-		isEventTrigger = true;
 		try {
 			image = ImageIO.read(getClass().getResourceAsStream("/objects/boots.png"));
 		} catch(IOException e) {
@@ -42,7 +41,7 @@ public class OBJ_Boots extends SuperObject {
 
 	@Override
 	public void onInteract(Entity.Player player) {
-		if (isEventTrigger && player.gp.eventManager != null) {
+		if (player.gp.eventManager != null) {
 			player.gp.eventManager.startEvent(this);
 		}
 	}
