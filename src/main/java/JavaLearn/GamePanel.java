@@ -7,6 +7,7 @@ import Map.Map;
 import Tile.TileManager;
 import common.Camera;
 import common.CollisionChecker;
+import common.EventManager;
 import common.Sound;
 
 import javax.swing.*;
@@ -21,18 +22,15 @@ public class GamePanel extends JPanel implements Runnable{
 	public final int maxScreenRow = 12;  // ขนาดแนวตั้ง
 	public final int screenWidth = tileSize * maxScreenCol;  // 768 pixels
 	public final int screenHeight = tileSize * maxScreenRow;  // 576 pixels
-	
-	//WORLD SETTINGS
-	public final int maxWorldCol = 66;
-	public final int maxWorldRow = 42;
 
 	//FPS
-	int FPS = 60;	
+	public final int FPS = 60;
 	
 	// SYSTEM
+	public EventManager eventManager;
 	public Camera camera;
 	public TileManager tileM;
-	KeyHandler keyH = new KeyHandler();
+	KeyHandler keyH = new KeyHandler(this);
 	Sound music = new Sound();
 	Sound se = new Sound();
 	public CollisionChecker cChecker = new CollisionChecker(this);
@@ -44,6 +42,7 @@ public class GamePanel extends JPanel implements Runnable{
 	public Player player;
 	public Map map;
     public int gameState = CommonConstant.STATE_MENU;
+    public boolean isCameraFollowPlayer = true;
 
 	public GamePanel () {
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));  // กำหนดขนาดของคลาสนี้(JPanel)
@@ -54,11 +53,13 @@ public class GamePanel extends JPanel implements Runnable{
 
 		// Initialize camera at player center
 		camera = new Camera(23 * tileSize + tileSize / 2, 21 * tileSize + tileSize / 2, screenWidth, screenHeight);
-		map = new ForestMap(maxWorldCol, maxWorldRow, 30);
+		map = new ForestMap(66, 44, 30);
 		map.loadMap(this);
 		map.setObjects(this);
-		tileM = new TileManager(this, camera, map);
-		player = new Player(this, keyH, camera);
+		map.setCheckpoints(this);
+		tileM = new TileManager(this, map);
+		player = new Player(this, keyH);
+		eventManager = new EventManager(player);
 	}
 	
 	public void setupGame() {
@@ -102,8 +103,13 @@ public class GamePanel extends JPanel implements Runnable{
 
 	public void update() {
 		player.update();
+		if (map.checkpointManager != null) {
+			map.checkpointManager.update(player, eventManager);
+		}
 		// Camera follows player center
-		updateCamera();
+		if (isCameraFollowPlayer) {
+			updateCamera();
+		}
 	}
 
 	public void updateCamera() {

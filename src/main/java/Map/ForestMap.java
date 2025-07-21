@@ -1,15 +1,9 @@
 package Map;
 
+import CheckpointSystem.CheckpointManager;
+import CheckpointSystem.Checkpoint_Start_Forest_Scene;
 import JavaLearn.GamePanel;
-import ObjectInMap.OBJ_Chest;
-import ObjectInMap.OBJ_MetalfenceRight;
-import ObjectInMap.OBJ_MetalfenceLeft;
-import ObjectInMap.OBJ_CarFront;
-import ObjectInMap.OBJ_CarBack;
-import ObjectInMap.OBJ_WoodBoard;
-import ObjectInMap.OBJ_WoodBody;
-import ObjectInMap.OBJ_WoodTail;
-import ObjectInMap.OBJ_WoodHead;
+import ObjectInMap.*;
 
 public class ForestMap extends Map {
     public ForestMap(int maxWorldCol, int maxWorldRow, int maxObjects) {
@@ -111,5 +105,31 @@ public class ForestMap extends Map {
         objects[17] = new OBJ_WoodTail();
         objects[17].worldX = 35 * gp.tileSize;
         objects[17].worldY = 24 * gp.tileSize;
+
+        //for testing
+        objects[18] = new OBJ_Boots();
+        objects[18].worldX = 14 * gp.tileSize;
+        objects[18].worldY = 13 * gp.tileSize;
+    }
+
+    @Override
+    public void setCheckpoints(GamePanel gp) {
+        checkpointManager = new CheckpointManager();
+        /*
+        checkpointManager.addCheckpoint(
+                new Checkpoint_Story(
+                        gp.tileSize * 14,
+                        gp.tileSize * 13,
+                        gp.tileSize,
+                        gp.tileSize));
+
+         */
+
+        checkpointManager.addCheckpoint(
+                new Checkpoint_Start_Forest_Scene(
+                        gp.tileSize * 12,
+                        gp.tileSize * 13,
+                        gp.tileSize,
+                        gp.tileSize));
     }
 } 
