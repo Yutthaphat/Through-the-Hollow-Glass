@@ -14,7 +14,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class GamePanel extends JPanel implements Runnable{
-	
+
 	final int originalTileSize = 16;  // 16*16 tile
 	final int scale = 3; // 16*3(scale)
 	public final int tileSize = originalTileSize * scale;  // 48*48 tile
@@ -25,7 +25,7 @@ public class GamePanel extends JPanel implements Runnable{
 
 	//FPS
 	public final int FPS = 60;
-	
+
 	// SYSTEM
 	public EventManager eventManager;
 	public Camera camera;
@@ -37,7 +37,7 @@ public class GamePanel extends JPanel implements Runnable{
 	public PlayerUI ui = new PlayerUI(this);
 	Thread gameThread;  // ทำให้โปรแกรมรันได้จนกว่าเราจะหยุด
 	MenuPage menuPage = new MenuPage(this);
-	
+
 	// ENTITY AND OBJECT
 	public Player player;
 	public Map map;
@@ -53,7 +53,7 @@ public class GamePanel extends JPanel implements Runnable{
 
 		// Initialize camera at player center
 		camera = new Camera(23 * tileSize + tileSize / 2, 21 * tileSize + tileSize / 2, screenWidth, screenHeight);
-		map = new ForestMap(66, 44, 30);
+		map = new ForestMap(68, 46, 50);
 		map.loadMap(this);
 		map.setObjects(this);
 		map.setCheckpoints(this);
@@ -61,28 +61,28 @@ public class GamePanel extends JPanel implements Runnable{
 		player = new Player(this, keyH);
 		eventManager = new EventManager(player);
 	}
-	
+
 	public void setupGame() {
-		
+
 		playMusic(0);
 	}
-	
+
 	public void startGameThread(){
 		gameThread = new Thread(this);
 		gameThread.start();
 	}
 
 	@Override
-	public void run() {	
+	public void run() {
 		double drawInterval = 1000000000/FPS;  //กำหนดความถี่ต่อเฟรม (เป็นหน่วย นาโนวินาที) เช่น FPS = 60 → 16,666,666 ns ต่อเฟรม
 		double delta = 0;   //ใช้สะสมเวลา (ดูว่าถึงเวลาวาดหรือยัง)
 		long lastTime = System.nanoTime();  //จำเวลาล่าสุด
 		long currentTime;
 		long timer = 0;   //เอาไว้จับครบ 1 วินาทีเพื่อโชว์ FPS
 		int drawCount = 0;   // นับว่าวาดไปกี่เฟรมแล้ว
-		
+
 		while(gameThread != null){    //ถ้าเกมยังไม่หยุด → วนลูปเกมเรื่อย ๆ
-			currentTime = System.nanoTime();   
+			currentTime = System.nanoTime();
 			delta += (currentTime - lastTime) / drawInterval;  //เอาเวลาที่ผ่านไปมาสะสมใน delta
 			timer = (currentTime - lastTime);    //เอาเวลาที่ผ่านไปเก็บใน timer เพื่อดูว่าครบ 1 วินาทีหรือยัง
 			lastTime = currentTime;
@@ -142,19 +142,19 @@ public class GamePanel extends JPanel implements Runnable{
 		g2.dispose();
 	}
 	public void playMusic(int i) {
-		
+
 		music.setFile(i);
 		music.play();
 		music.loop();
 	}
 	public void stopMusic() {
-		
+
 		music.stop();
 	}
 	public void playSE(int i) {
-		
+
 		se.setFile(i);
 		se.play();
 	}
-}	
+}
 

@@ -52,15 +52,15 @@ public class ForestMap extends Map {
 
         objects[3] = new OBJ_MetalfenceRight();
         objects[3].worldX = 38 * gp.tileSize;
-        objects[3].worldY = 37 * gp.tileSize;
+        objects[3].worldY = 39 * gp.tileSize;
 
         objects[4] = new OBJ_MetalfenceLeft();
         objects[4].worldX = 37 * gp.tileSize;
-        objects[4].worldY = 37 * gp.tileSize;
+        objects[4].worldY = 39 * gp.tileSize;
 
         objects[6] = new OBJ_Chest();
         objects[6].worldX = 40 * gp.tileSize;
-        objects[6].worldY = 14 * gp.tileSize;
+        objects[6].worldY = 16 * gp.tileSize;
 
       /*  objects[7] = new OBJ_Boots();
         objects[7].worldX = 37 * gp.tileSize;
@@ -68,48 +68,48 @@ public class ForestMap extends Map {
 
         objects[8] = new OBJ_CarFront();
         objects[8].worldX = 9 * gp.tileSize;
-        objects[8].worldY = 12 * gp.tileSize;
+        objects[8].worldY = 14 * gp.tileSize;
 
         objects[9] = new OBJ_CarBack();
         objects[9].worldX = 8 * gp.tileSize;
-        objects[9].worldY = 12 * gp.tileSize;
+        objects[9].worldY = 14 * gp.tileSize;
 
-        objects[10] = new OBJ_WoodBoard();
+        objects[10] = new OBJ_StopCarWoodBoard();
         objects[10].worldX = 14 * gp.tileSize;
-        objects[10].worldY = 12 * gp.tileSize;
+        objects[10].worldY = 14 * gp.tileSize;
 
-        objects[11] = new OBJ_WoodBoard();
+        objects[11] = new OBJ_DirectionWoodBoard();
         objects[11].worldX = 27 * gp.tileSize;
-        objects[11].worldY = 12 * gp.tileSize;
+        objects[11].worldY = 14 * gp.tileSize;
 
         objects[12] = new OBJ_WoodBody();
         objects[12].worldX = 25 * gp.tileSize;
-        objects[12].worldY = 17 * gp.tileSize;
+        objects[12].worldY = 19 * gp.tileSize;
 
         objects[13] = new OBJ_WoodBody();
         objects[13].worldX = 34 * gp.tileSize;
-        objects[13].worldY = 24 * gp.tileSize;
+        objects[13].worldY = 26 * gp.tileSize;
 
         objects[14] = new OBJ_WoodHead();
         objects[14].worldX = 24 * gp.tileSize;
-        objects[14].worldY = 17 * gp.tileSize;
+        objects[14].worldY = 19 * gp.tileSize;
 
         objects[15] = new OBJ_WoodHead();
         objects[15].worldX = 33 * gp.tileSize;
-        objects[15].worldY = 24 * gp.tileSize;
+        objects[15].worldY = 26 * gp.tileSize;
 
         objects[16] = new OBJ_WoodTail();
         objects[16].worldX = 26 * gp.tileSize;
-        objects[16].worldY = 17 * gp.tileSize;
+        objects[16].worldY = 19 * gp.tileSize;
 
         objects[17] = new OBJ_WoodTail();
         objects[17].worldX = 35 * gp.tileSize;
-        objects[17].worldY = 24 * gp.tileSize;
+        objects[17].worldY = 26 * gp.tileSize;
 
         //for testing
         objects[18] = new OBJ_Boots();
         objects[18].worldX = 14 * gp.tileSize;
-        objects[18].worldY = 13 * gp.tileSize;
+        objects[18].worldY = 15 * gp.tileSize;
     }
 
     @Override
@@ -132,4 +132,4 @@ public class ForestMap extends Map {
                         gp.tileSize,
                         gp.tileSize));
     }
-} 
+}

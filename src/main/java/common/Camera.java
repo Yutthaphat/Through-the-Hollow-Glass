@@ -1,5 +1,8 @@
 package common;
 
+/**
+ * Camera for 2D scrolling.
+ */
 public class Camera {
     public int worldX;
     public int worldY;
@@ -20,4 +23,4 @@ public class Camera {
     public int getScreenY(int objWorldY) {
         return objWorldY - worldY + (screenHeight / 2);
     }
-} 
+}

@@ -24,10 +24,32 @@ public class TextBoxUtil {
         } else if (messages.size() == 2) {
             drawMessageInBox(g2, x, y-10, boxWidth, messages.get(0));
             drawMessageInBox(g2, x, y+10, boxWidth, messages.get(1));
-        } else if (messages.size() >= 3) {
+        } else if (messages.size() == 3) {
             drawMessageInBox(g2, x, y-20, boxWidth, messages.get(0));
             drawMessageInBox(g2, x, y, boxWidth, messages.get(1));
             drawMessageInBox(g2, x, y+20, boxWidth, messages.get(2));
+        } else if (messages.size() == 4) {
+            drawMessageInBox(g2, x, y-30, boxWidth, messages.get(0));
+            drawMessageInBox(g2, x, y-10, boxWidth, messages.get(1));
+            drawMessageInBox(g2, x, y+10, boxWidth, messages.get(2));
+            drawMessageInBox(g2, x, y+30, boxWidth, messages.get(3));
+        }
+        else if (messages.size() == 5) {
+            drawMessageInBox(g2, x, y - 40, boxWidth, messages.get(0)); // บรรทัดบนสุด
+            drawMessageInBox(g2, x, y - 20, boxWidth, messages.get(1)); // บรรทัดถัดมา
+            drawMessageInBox(g2, x, y, boxWidth, messages.get(2));     // บรรทัดกลาง
+            drawMessageInBox(g2, x, y + 20, boxWidth, messages.get(3)); // บรรทัดถัดลงมา
+            drawMessageInBox(g2, x, y + 40, boxWidth, messages.get(4)); // บรรทัดล่างสุด
+        }
+        else if (messages.size() == 6) {
+            // สำหรับ 6 บรรทัด เราจะเริ่มจาก Y ที่ต่ำกว่ากลางเล็กน้อย เพื่อให้ครอบคลุมพื้นที่
+            // แต่ละบรรทัดห่างกัน 20 พิกเซล
+            drawMessageInBox(g2, x, y - 50, boxWidth, messages.get(0));
+            drawMessageInBox(g2, x, y - 30, boxWidth, messages.get(1));
+            drawMessageInBox(g2, x, y - 10, boxWidth, messages.get(2));
+            drawMessageInBox(g2, x, y + 10, boxWidth, messages.get(3));
+            drawMessageInBox(g2, x, y + 30, boxWidth, messages.get(4));
+            drawMessageInBox(g2, x, y + 50, boxWidth, messages.get(5));
         }
         g2.setFont(new Font("Arial", Font.PLAIN, 14));
         int hintWidth = g2.getFontMetrics().stringWidth(hint);
@@ -51,4 +73,4 @@ public class TextBoxUtil {
         int textWidth = g2.getFontMetrics().stringWidth(message);
         g2.drawString(message, x + (screenWidth - textWidth) / 2, marginY + 60);
     }
-} 
+}
